@@ -22,6 +22,8 @@
 
     <link rel="stylesheet" href="<?php echo base_url() ?>css/datatables.net-bs/css/dataTables.bootstrap.min.css">
 
+    <link rel="stylesheet" href="<?php echo base_url() ?>css/css/sweetalert2.min.css">
+
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>

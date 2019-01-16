@@ -18,3 +18,5 @@
 
 <script src="<?php echo base_url() ?>css/datatables.net-bs/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo base_url() ?>css/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+  <script src="<?php echo base_url() ?>css/js/sweetalert2.min.js"></script>

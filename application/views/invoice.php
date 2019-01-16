@@ -33,7 +33,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-       Sale Invoices
+       Supplier Invoices
         <small>it all starts here</small>
       </h1>
       <ol class="breadcrumb">
@@ -158,7 +158,8 @@
 
               <div class="box-footer">
           <!-- /.col -->
-        <div class="col-sm-3 col-sm-offset-9">
+          <div class="row">
+            <div class="col-sm-3 pull-right">
           <button type="button" class="btn btn-primary pull-right" id="click"><i class="fa fa-plus"></i></button>
           <p class="lead">Amount Due <?php echo date("D/M/Y") ?></p>
 
@@ -171,9 +172,16 @@
               </tr>
              
             </table>
+             </div> 
+              </div>
+              <div class="col-sm-3 col-sm-offset-5">
+                <textarea name="description" id="" cols="30" rows="5" class="form-control" placeholder="description...."></textarea>
+              </div>  
             </form>
+         
+         
           </div>
-          </div>
+        </div>
       <!-- Default box -->
     </section>
         </div>

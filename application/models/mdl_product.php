@@ -145,7 +145,8 @@
 				`inv_no`='".$inv_data['inv_no']."',
 				`agency_id`='".$inv_data['agency_id']."',
 				`date`='".$inv_data['date']."',
-				`inv_subtotal`='".$inv_data['inv_subtotal']."'
+				`inv_subtotal`='".$inv_data['inv_subtotal']."',
+				`description`='".$inv_data['description']."'
 				 WHERE id='$id'";
 
 			$run=$this->db->query($exe);	

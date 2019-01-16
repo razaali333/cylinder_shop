@@ -33,12 +33,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-       Sale Invoices
+      Return Cylinder
         <small>it all starts here</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Sale Invoice Page</li>
+        <li class="active">Return Cylinder Page</li>
       </ol>
     </section>
 
@@ -59,7 +59,7 @@
           
           </div>
           <div  class="box-body">
-            <form action="<?php echo base_url() ?>customer/insert_invoice" method="post">
+            <form action="<?php echo base_url('customer/edit_return_cylinder_form/'.$id.'') ?>" method="post">
             <div class="row">
                <div class="col-xs-8 col-xs-offset-4">
 
@@ -76,12 +76,12 @@
               <div class="col-xs-2" style="margin-left: 4px;">
             
             <label for="">Select Customer</label>
-            <select name="customer" id="customer" required="" class="form-control">
+            <select name="customer" id="customer" class="form-control">
               <option value=""  selected="">Select Customer</option>
                <?php foreach($customer->result() as $row)
                   {?>
 
-                    <option value="<?php echo $row->id ?>"><?php echo $row->name; ?></option>
+                    <option value="<?php echo $row->id ?>"  <?php if($cus_id==$row->id) { ?> selected="selected" <?php } ?>><?php echo $row->name; ?></option>
                   <?php } ?>
             </select>
             
@@ -92,8 +92,7 @@
          </div>
         <div class="col-xs-1 invoice-col">
           <label for="">Invoice #</label>
-           <?php $invno=$invno->row_array(); ?> 
-          <input type="text" readonly="" name="invno" class="form-control" style="font-weight:bold" value="<?php echo $invno['invoice_no']+1 ?>">
+          <input type="text" readonly="" name="invno" class="form-control" style="font-weight:bold" value="<?php echo $inv_no; ?>">
           <br>
          
         </div>
@@ -106,7 +105,7 @@
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="date" class="form-control pull-right input-sm" value="<?php echo date("d/m/Y"); ?>">
+                  <input type="text" name="date" class="form-control pull-right input-sm" value="<?php echo $date ?>">
                 </div>
                 <!-- /.input group -->
               </div>
@@ -119,33 +118,30 @@
           <thead>
             <tr>
               <th>No</th>
-              <th>P_Name</th>
+              <th>Cylinder Name</th>
               <th>Qty</th>
-              <th>Price</th>
-              <th>Amount</th>
-              <th></th>
             </tr>
           </thead>
           <tbody id="inv_detail">
+          	<?php 
+                $count=0;
+               foreach($query->result() as $row){ 
+                   $count++;
+                ?>
             <tr>
               <th><b class="no">1</b></th>
-              <td><select name="p_name[]" id="" required="" class="form-control">
-                  <option value="" disabled="" selected="">Select Item</option>
-                  <?php foreach($item->result() as $row)
-                  {  
-                    ?>
+              <td><select name="p_name[]" id="" class="form-control">
+          <option value="" disabled="" selected="">Select Item</option>
 
-                    <option value="<?php echo $row->id ?>"><?php echo $row->product_name; ?></option>
+            <?php foreach($item->result() as $product) {?>
+            <option value="<?php echo $product->id ?>" <?php if($product->id==$row->p_id){?> selected="selected" <?php } ?>><?php echo $product->product_name ?></option>
                   <?php } ?>
                 </select></td>
 
-              <td><input type="text" name="qty[]"  required="" pattern="^[1-9][0-9]*$" class="form-control qty" placeholder="quantity"></td>
+              <td><input type="text" name="qty[]" class="form-control qty" value="<?php echo $row->qty ?>" placeholder="quantity"></td>
 
-              <td><input type="text" name="price[]" required=""  pattern="^[1-9][0-9]*$" class="form-control price" id="price" placeholder="price"></td>
-
-              <td><input type="text" readonly="" name="subtotal[]" class="form-control amt"></td>
             </tr>
-
+		  <?php } ?>
           </tbody>
           <tfoot>
               <tr>
@@ -161,49 +157,33 @@
        </div>
 
               <div class="box-footer">
-             <!-- /.col -->
-              <div class="row">
-                <div class="col-sm-3 col-sm-offset-5">
-                  <textarea name="description" class="form-control" id="" cols="30" rows="5" placeholder="Description..."></textarea>
-                </div>
-                 <div class="col-sm-3 pull-right">
+          <!-- /.col -->
+       
+				<div class="row">
+					<div class="col-sm-3 col-sm-offset-6">
+						<div class="form-group">
+					  <textarea class="form-control" name="description" rows="5" id="comment"  placeholder="Description..."><?php echo $description ?></textarea>
+					</div>
+					</div>
+					<div class="col-sm-3 pull-right">
           <button type="button" class="btn btn-primary pull-right" id="click"><i class="fa fa-plus"></i></button>
           <p class="lead">Amount Due <?php echo date("D/M/Y") ?></p>
-
+			
           <div class="table-responsive">
 
             <table class="table">
-              <tbody id="tot_body">
-                 <tr>
-                <th style="width:50%">Subtotal:</th>
+              <tr>
+                <th style="width:50%">Total Quantity:</th>
                 <td><input type="text" readonly="" name="total" value="" class="form-control input-sm total"></td>
-
               </tr>
-             <tr>
-                <th>Previous Balance</th>
-                <td id="prev"><input type="text" readonly="" class="form-control" placeholder="please first select customer"></td>
-             </tr>
-             <tr>
-                <th>New Balance</th>
-                <td id=""><input type="text" readonly="" id="new_balance" value="" class="form-control" placeholder=""></td>
-             </tr>
-              </tbody>
+             
             </table>
-            </div>
-          </div>
-              </div>
-              <div class="row" id="product">
-                  <?php foreach( $item->result() as $rows){ ?>
-                   <div class="col-<?php if(strlen(trim($rows->product_name))>=11){?>sm-2<?php }else{?>sm-1<?php } ?>">
-                     <label for="" class="control-label" style="font-size: 12px;"><?php echo $rows->product_name ?> </label>
-                     <input type="text" class="form-control" readonly="">
-                   </div>
-                 <?php } ?>
-
-                  
-              </div>
             </form>
-          
+          </div>
+          </div>
+				</div>	
+        	
+          </div>
       <!-- Default box -->
     </section>
         </div>
@@ -225,18 +205,6 @@
 <!-- ./wrapper -->
   <?php include('include/foot.php'); ?>
   <script>
-    $('#product').hide();
-    $('#customer').on('change',function(){
-     
-      var customer=$("#customer").val();
-      if(customer=='')
-      {
-        $("#product").hide();
-      }
-      else{
-        $("#product").show(); 
-      }
-    })
     $(function(){
          $('#customer').on("change",function(){
                  var customer_name=$('#customer').val();
@@ -253,29 +221,6 @@
                      });
                  }
          });  
-         $(function(){
-         $('#customer').on("change",function(){
-                 var customer_name=$('#customer').val();
-                 if(customer_name !='')
-                 {
-                     $.ajax({
-                           url:"<?php echo base_url('customer/fetch_customer_prev'); ?>",
-                           method:"POST",
-                           data:{customer_name:customer_name},
-                           success:function(data)
-                           {
-                            
-                               $('#prev').html(data);
-                            
-                           }
-
-                     });
-                 }
-                 else{
-                    $('.prev_bln').val('0');
-                 }
-         });  
-    });
     });
   </script>
   <script>
@@ -285,7 +230,6 @@
   
 
     });
-
   	 function add_new_row()
     {
 
@@ -301,54 +245,37 @@
                 '</select></td>'+
 
               '<td><input type="text" name="qty[]" class="form-control qty" placeholder="quantity"></td>'+
-
-              '<td><input type="text" name="price[]" class="form-control price" placeholder="price"></td>'+
-
-              '<td><input type="text" readonly="" name="subtotal[]" class="form-control amt"></td>'+
               '<td><td><span class="btn btn-danger" type="button" id="remove"><i class="fa fa-remove"></></span></td></td>'+
               '</tr>';
               $('#inv_detail').append(row);
-    }	 
+              
+}
 
-     $(document).on('click', '#remove', function () {
+ $(document).on('click', '#remove', function () {
          $(this).closest('tr').remove();
-        //return false;
-        // alert();
-        total();
-      });
-
-     $('#inv_detail').delegate('.qty,.price','keyup',function(){
+         total();
+    });	 
+	
+ $('#inv_detail').delegate('.qty','keyup',function(){
         var tr=$(this).parent().parent();
         var qty=tr.find('.qty').val()-0;
-        var price=tr.find('.price').val()-0;
-        var amt=qty*price;
-        tr.find('.amt').val(amt);
+        var amt=qty;
         total();
-        g_total();
       }); 
-     // $('.price').on("keydown keyup",function(){
-     //          g_total();
-     // });
-     function g_total()
-     {
-      var total=$('.total').val()-0;
-      console.log(total);
-      var prev=$('.prev_bln').val()-0;
-      var new_balance=total+prev;
-      $('#new_balance').val(new_balance);
-     }
     
      function total()
     {
       var gg=0;
-      $('.amt').each(function(i,element){
-          var amt=$(this).val()-0;
-          gg +=amt;
+      $('.qty').each(function(i,element){
+          var qty=$(this).val()-0;
+          gg +=qty;
 
       });
     $('.total').val(gg);
 
     }
+
+
 
   	});
   </script>
@@ -360,6 +287,5 @@
       autoclose: true
     })
 </script>
-
 </body>
 </html>

@@ -164,7 +164,11 @@
 
               <div class="box-footer">
           <!-- /.col -->
-        <div class="col-sm-3 col-sm-offset-9">
+              <div class="row">
+                <div class="col-sm-3 col-sm-offset-5">
+                  <textarea name="description" id="" cols="30" rows="5" class="form-control"> <?php echo $description ?></textarea>
+                </div>
+                 <div class="col-sm-3 pull-right">
           <button type="button" class="btn btn-primary pull-right" id="click"><i class="fa fa-plus"></i></button>
           <p class="lead">Amount Due <?php echo date("D/M/Y") ?></p>
 
@@ -177,8 +181,11 @@
               </tr>
              
             </table>
-            </form>
+            </div>
           </div>
+              </div>
+            </form>
+          
       <!-- Default box -->
     </section>
         </div>

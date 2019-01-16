@@ -88,7 +88,8 @@ class Product extends CI_Controller {
 				'inv_no'=>	$this->input->post('invno'),
 				'agency_id'=>	$this->input->post('agency'),
 				'date'=>	$this->input->post('date'),
-				'inv_subtotal'=>	$this->input->post('total')
+				'inv_subtotal'=>	$this->input->post('total'),
+				'description'=>		$this->input->post('description')
 		);
 
 		$form_data['item_id'] =	$this->input->post('p_name');
@@ -178,7 +179,6 @@ class Product extends CI_Controller {
 		{
 			$this->load->model('mdl_product');
 			$this->load->model('mdl_agency');
-			$this->load->model('mdl_product');
 			$data['agency']=$this->mdl_agency->get_agency();
 			$data['item']=$this->mdl_product->get_item();
 			$data['query']=$this->mdl_product->fetch_invoice($id);
@@ -188,6 +188,7 @@ class Product extends CI_Controller {
 			$data['inv_no']=$rows['inv_no'];
 			$data['inv_id']=$rows['agency_id'];
 			$data['id']=$rows['id'];
+			$data['description']=$rows['description'];
 			$this->load->view('edit_invoice',$data);
 		}
 
@@ -198,6 +199,7 @@ class Product extends CI_Controller {
 		$inv_data['agency_id']=$this->input->post('agency');
 		$inv_data['date']=$this->input->post('date');
 		$inv_data['inv_subtotal']=$this->input->post('total');
+		$inv_data['description']=$this->input->post('description');
 		
 		$form_data['item_id'] =	$this->input->post('p_name');
 		$form_data['qty'] =	$this->input->post('qty');

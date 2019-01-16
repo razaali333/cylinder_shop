@@ -98,7 +98,8 @@
 				`invoice_no`='".$inv_data['invoice_no']."',
 				`customer_id`='".$inv_data['customer_id']."',
 				`date`='".$inv_data['date']."',
-				`invoice_total`='".$inv_data['invoice_total']."'
+                `invoice_total`='".$inv_data['invoice_total']."',
+				`description`='".$inv_data['description']."'
 				 WHERE id='$id'";
 
 			$run=$this->db->query($exe);	
@@ -146,6 +147,21 @@
             return $output;
     }
 
+     function fetchcustomer_prev($customer_name)
+    {
+    	$query ="SELECT customer.opening_balance AS open_balance,sum(sale_invoice.invoice_total) AS inv_total ,sum(return_payment.amount) AS ret_pay FROM customer AS customer LEFT JOIN sale_invoice ON (customer.id=sale_invoice.customer_id) LEFT JOIN return_payment ON(customer.id=return_payment.customer_id) WHERE customer.id='$customer_name'";
+    	$exe=$this->db->query($query);
+            $row=$exe->row_array();
+            $opn_bln=$row['open_balance'];
+            $inv_tot=$row['inv_total'];
+            $ret_pay=$row['ret_pay'];
+           
+           $total=$opn_bln+$inv_tot-$ret_pay;
+         	$output='<input type="text" readonly=""  style="font-weight:bold" value="'.$total.'" class="form-control prev_bln">';		
+         		
+            return $output;
+    }
+
     public function get_return_invno()
 	{
 		$exe="SELECT * FROM return_cylinder ORDER BY invoice_no DESC LIMIT 1";
@@ -154,6 +170,7 @@
 
 	 public function insert_return_item($form_data)
     {
+
 
 		for($i=0;$i<count($form_data['p_id']);$i++){
 
@@ -171,6 +188,114 @@
 		return $query;
     }
 
+    public function fetch_return_cylinder()
+    {
+    	$exe="SELECT return_cylinder.*,customer.name,customer.mobile FROM return_cylinder AS return_cylinder LEFT JOIN customer AS customer ON (return_cylinder.customer_id = customer.id) LEFT JOIN product AS product ON (return_cylinder.p_id = product.id) GROUP BY return_cylinder.customer_id HAVING COUNT(return_cylinder.customer_id) >= 1";
+
+    	$query=$this->db->query($exe);
+    	return $query;
+    }
+
+
+     public function fetch_invoice($id)
+    {
+    	$query="SELECT return_cylinder.*,product.product_name FROM return_cylinder LEFT JOIN product ON (return_cylinder.p_id=product.id) WHERE return_cylinder.invoice_no=$id";
+
+    	 $query=$this->db->query($query);
+    	if($query)
+    	{
+    		return $query;
+    	}
+    	else{
+    		 return $date=$query->row_array();	
+    	}
+    	
+    }
+
+
+    public function edit_return_cylinder($form_data,$id)
+    {
+    			$del="DELETE FROM return_cylinder WHERE invoice_no=$id";
+    			$exe=$this->db->query($del);
+    			if($exe)
+    			{
+
+
+    	for($i=0;$i<count($form_data['p_id']);$i++){
+
+			  $det="INSERT INTO return_cylinder SET
+				`invoice_no`=".$form_data['invoice_no'].",
+				`customer_id`='".$form_data['customer_id']."',
+				`p_id`='".$form_data['p_id'][$i]."',
+				`qty`='".$form_data['qty'][$i]."',
+				`date`='".$form_data['date']."',
+				`description`='".$form_data['description']."'
+				"; 
+
+				$query=$this->db->query($det);
+		}
+			}
+		return $query;
+    }
+
+    public function delete_return_cylinder_inv($id)
+    {
+    	$del="DELETE FROM `return_cylinder` WHERE invoice_no='$id'";
+				$run=$this->db->query($del);
+				return $run;
+    }
+
+    	public function insert_payment($form_data)
+    	{
+    		$query=$this->db->insert('return_payment',$form_data);
+    		return $query;
+    	}
+
+    	public function get_payment_inv_no()
+    	{
+    	$exe="SELECT * FROM return_payment ORDER BY invoice_no DESC LIMIT 1";
+		return $query=$this->db->query($exe);
+    	}
+
+
+    	public function fetch_ret_pay()
+    	{
+    		$exe="SELECT return_payment.*,customer.name,customer.mobile FROM return_payment AS return_payment LEFT JOIN customer AS customer ON (return_payment.customer_id = customer.id)";
+    		return $query=$this->db->query($exe);
+    	}
+
+    	public function get_cust_returnpay($id)
+    	{
+    		$exe="SELECT * FROM return_payment WHERE id='$id'";
+    		 $query=$this->db->query($exe);
+    		return $run=$query->row_array();
+    	}
+
+    	public function update_payment($form_data,$id)
+    	{
+    	$this->db->where('return_payment.id',$id);
+		$query=$this->db->update('return_payment',$form_data);
+		return $query;	
+    	}
+
+    	public function delete_ret_payment($id)
+    	{
+    		 $this->db->where('id', $id);
+		  $query= $this->db->delete('return_payment');
+		  return $query; 
+    	}
+
+    	public function model($id)
+    	{
+    		$query ="SELECT return_cylinder.*,customer.name,customer.mobile,product.product_name FROM return_cylinder AS return_cylinder LEFT JOIN customer AS customer ON (return_cylinder.customer_id = customer.id) LEFT JOIN product AS product ON (return_cylinder.p_id = product.id) WHERE return_cylinder.invoice_no=$id";
+    	$exe=$this->db->query($query);
+    		$exe=$exe->result();
+            // $row=$exe->row_array();
+            // $name=$row['name'];
+          //   	
+            	echo json_encode($exe);
+            return $exe;
+    	}
 	 }
 
 

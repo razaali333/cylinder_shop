@@ -59,8 +59,20 @@
         </li>
 
         <li>
-          <a href="<?php echo base_url() ?>customer/all_customer_invoices">
-      <i class="fa fa-money"></i> &nbsp;<span style="font-size: 20px;">Return Payment</span>
+          <a href="<?php echo base_url() ?>customer/all_return_cylinder">
+      <i class="fa fa-money"></i> &nbsp;<span style="font-size: 20px;">All Return Cylinder</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="<?php echo base_url() ?>customer/payment">
+      <i class="fa fa-money"></i> &nbsp;<span style="font-size: 20px;"> Payment</span>
+          </a>
+        </li>
+
+         <li>
+          <a href="<?php echo base_url() ?>customer/all_return_payment">
+      <i class="fa fa-money"></i> &nbsp;<span style="font-size: 20px;">All Return Payment</span>
           </a>
         </li>
 

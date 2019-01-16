@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -33,12 +33,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-       Sale Invoices
+      Payment
         <small>it all starts here</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Sale Invoice Page</li>
+        <li class="active">Sale Payment Page</li>
       </ol>
     </section>
 
@@ -59,11 +59,11 @@
           
           </div>
           <div  class="box-body">
-            <form action="<?php echo base_url() ?>customer/insert_invoice" method="post">
+            <form action="<?php echo base_url() ?>customer/insert_payment" id="form" method="post">
             <div class="row">
                <div class="col-xs-8 col-xs-offset-4">
 
-             <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i></button>
+             <button type="submit" class="btn btn-primary" id="submit"><i class="fa fa-save"></i></button>
               <span class="btn btn-default"><i class="fa fa-print"></i></span>
               <span class="btn btn-info"><i class="fa fa-file"></i></span>
               <span class="btn btn-danger"><i class="fa fa-trash"></i></span>
@@ -76,7 +76,7 @@
               <div class="col-xs-2" style="margin-left: 4px;">
             
             <label for="">Select Customer</label>
-            <select name="customer" id="customer" required="" class="form-control">
+            <select name="customer" id="customer" class="form-control" required="">
               <option value=""  selected="">Select Customer</option>
                <?php foreach($customer->result() as $row)
                   {?>
@@ -90,10 +90,10 @@
          <div id="shop">
            
          </div>
-        <div class="col-xs-1 invoice-col">
+         <div class="col-xs-1 invoice-col">
           <label for="">Invoice #</label>
            <?php $invno=$invno->row_array(); ?> 
-          <input type="text" readonly="" name="invno" class="form-control" style="font-weight:bold" value="<?php echo $invno['invoice_no']+1 ?>">
+          <input type="text" readonly="" name="invno" class="form-control" value="<?php echo $invno['invoice_no']+1 ?>">
           <br>
          
         </div>
@@ -113,37 +113,27 @@
               <!-- /.form group -->
         </div>
             </div>
+            
+           
              <div class="row invoice-info" style="margin-top: 20px;"> 
-             <div class="col-xs-12 table-responsive"> 
+             <div class="col-xs-8 table-responsive"> 
         <table class="table table-striped">
           <thead>
             <tr>
               <th>No</th>
-              <th>P_Name</th>
-              <th>Qty</th>
-              <th>Price</th>
-              <th>Amount</th>
-              <th></th>
+              <th>Payment</th>
+              <th>Previous Balance</th>
+              <th>Remaining Balance</th>
             </tr>
           </thead>
           <tbody id="inv_detail">
             <tr>
               <th><b class="no">1</b></th>
-              <td><select name="p_name[]" id="" required="" class="form-control">
-                  <option value="" disabled="" selected="">Select Item</option>
-                  <?php foreach($item->result() as $row)
-                  {  
-                    ?>
 
-                    <option value="<?php echo $row->id ?>"><?php echo $row->product_name; ?></option>
-                  <?php } ?>
-                </select></td>
-
-              <td><input type="text" name="qty[]"  required="" pattern="^[1-9][0-9]*$" class="form-control qty" placeholder="quantity"></td>
-
-              <td><input type="text" name="price[]" required=""  pattern="^[1-9][0-9]*$" class="form-control price" id="price" placeholder="price"></td>
-
-              <td><input type="text" readonly="" name="subtotal[]" class="form-control amt"></td>
+              <td ><input type="text" name="amount" class="form-control price" pattern="^[1-9][0-9]*$" id="price" placeholder="price" required=""></td>
+              <td id="prev"><input type="text" readonly="" class="form-control" placeholder="please first select customer"></td>
+              <td ><input type="text"  class="form-control new_bln" value=""></td>
+              <td>  <textarea name="description" class="form-control" placeholder="Description..." id="" cols="30" rows="4"></textarea></td>
             </tr>
 
           </tbody>
@@ -161,49 +151,10 @@
        </div>
 
               <div class="box-footer">
-             <!-- /.col -->
-              <div class="row">
-                <div class="col-sm-3 col-sm-offset-5">
-                  <textarea name="description" class="form-control" id="" cols="30" rows="5" placeholder="Description..."></textarea>
-                </div>
-                 <div class="col-sm-3 pull-right">
-          <button type="button" class="btn btn-primary pull-right" id="click"><i class="fa fa-plus"></i></button>
-          <p class="lead">Amount Due <?php echo date("D/M/Y") ?></p>
-
-          <div class="table-responsive">
-
-            <table class="table">
-              <tbody id="tot_body">
-                 <tr>
-                <th style="width:50%">Subtotal:</th>
-                <td><input type="text" readonly="" name="total" value="" class="form-control input-sm total"></td>
-
-              </tr>
-             <tr>
-                <th>Previous Balance</th>
-                <td id="prev"><input type="text" readonly="" class="form-control" placeholder="please first select customer"></td>
-             </tr>
-             <tr>
-                <th>New Balance</th>
-                <td id=""><input type="text" readonly="" id="new_balance" value="" class="form-control" placeholder=""></td>
-             </tr>
-              </tbody>
-            </table>
-            </div>
+          <!-- /.col -->
+       
+          </form>
           </div>
-              </div>
-              <div class="row" id="product">
-                  <?php foreach( $item->result() as $rows){ ?>
-                   <div class="col-<?php if(strlen(trim($rows->product_name))>=11){?>sm-2<?php }else{?>sm-1<?php } ?>">
-                     <label for="" class="control-label" style="font-size: 12px;"><?php echo $rows->product_name ?> </label>
-                     <input type="text" class="form-control" readonly="">
-                   </div>
-                 <?php } ?>
-
-                  
-              </div>
-            </form>
-          
       <!-- Default box -->
     </section>
         </div>
@@ -225,18 +176,9 @@
 <!-- ./wrapper -->
   <?php include('include/foot.php'); ?>
   <script>
-    $('#product').hide();
-    $('#customer').on('change',function(){
-     
-      var customer=$("#customer").val();
-      if(customer=='')
-      {
-        $("#product").hide();
-      }
-      else{
-        $("#product").show(); 
-      }
-    })
+   
+  </script>
+  <script>
     $(function(){
          $('#customer').on("change",function(){
                  var customer_name=$('#customer').val();
@@ -253,7 +195,9 @@
                      });
                  }
          });  
-         $(function(){
+    });
+
+    $(function(){
          $('#customer').on("change",function(){
                  var customer_name=$('#customer').val();
                  if(customer_name !='')
@@ -264,94 +208,23 @@
                            data:{customer_name:customer_name},
                            success:function(data)
                            {
-                            
-                               $('#prev').html(data);
-                            
-                           }
-
+                             $('#prev').html(data);
+                           }  
                      });
-                 }
-                 else{
-                    $('.prev_bln').val('0');
                  }
          });  
     });
-    });
-  </script>
-  <script>
-  	$(function(){
-  		 $(document).on('click','#click',function(){
-             add_new_row();
-  
 
-    });
-
-  	 function add_new_row()
-    {
-
-      
-      var row='<tr id="row_id">'+
-              '<th><b class="no"></b></th>'+
-               '<td><select name="p_name[]" id="" class="form-control">'+
-                  '<option value="" disabled="" selected="">Select Item</option>'+
-                  '<?php foreach($item->result() as $row) {   ?>'+
-
-                    '<option value="<?php echo $row->id?>"><?php echo $row->product_name; ?></option>'+
-                  '<?php } ?>'+
-                '</select></td>'+
-
-              '<td><input type="text" name="qty[]" class="form-control qty" placeholder="quantity"></td>'+
-
-              '<td><input type="text" name="price[]" class="form-control price" placeholder="price"></td>'+
-
-              '<td><input type="text" readonly="" name="subtotal[]" class="form-control amt"></td>'+
-              '<td><td><span class="btn btn-danger" type="button" id="remove"><i class="fa fa-remove"></></span></td></td>'+
-              '</tr>';
-              $('#inv_detail').append(row);
-    }	 
-
-     $(document).on('click', '#remove', function () {
-         $(this).closest('tr').remove();
-        //return false;
-        // alert();
-        total();
-      });
-
-     $('#inv_detail').delegate('.qty,.price','keyup',function(){
+    $('#inv_detail').delegate('.price','keyup',function(){
         var tr=$(this).parent().parent();
-        var qty=tr.find('.qty').val()-0;
         var price=tr.find('.price').val()-0;
-        var amt=qty*price;
-        tr.find('.amt').val(amt);
-        total();
-        g_total();
+        var prev_balance=tr.find('.prev_bln').val()-0;
+        var amt=prev_balance-price;
+        tr.find('.new_bln').val(amt);
       }); 
-     // $('.price').on("keydown keyup",function(){
-     //          g_total();
-     // });
-     function g_total()
-     {
-      var total=$('.total').val()-0;
-      console.log(total);
-      var prev=$('.prev_bln').val()-0;
-      var new_balance=total+prev;
-      $('#new_balance').val(new_balance);
-     }
     
-     function total()
-    {
-      var gg=0;
-      $('.amt').each(function(i,element){
-          var amt=$(this).val()-0;
-          gg +=amt;
-
-      });
-    $('.total').val(gg);
-
-    }
-
-  	});
   </script>
+
 <script>
   $(document).ready(function () {
     $('.sidebar-menu').tree()

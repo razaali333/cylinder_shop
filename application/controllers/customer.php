@@ -156,7 +156,8 @@ class Customer extends CI_Controller {
 				'invoice_no	'=>	$this->input->post('invno'),
 				'customer_id'=>	$this->input->post('customer'),
 				'date'=>	$this->input->post('date'),
-				'invoice_total'=>	$this->input->post('total')
+				'invoice_total'=>	$this->input->post('total'),
+				'description'=>	$this->input->post('description')
 		);
 
 		$form_data['item_id'] =	$this->input->post('p_name');
@@ -220,6 +221,7 @@ class Customer extends CI_Controller {
 		$data['mobile']=$rows['mobile'];
 		$data['region']=$rows['region_name'];
 		$data['id']=$rows['id'];
+		$data['description']=$rows['description'];
 		$this->load->view('edit_sale_invoice',$data);
 	}
 	
@@ -231,6 +233,7 @@ class Customer extends CI_Controller {
 		$inv_data['customer_id']=$this->input->post('customer');
 		$inv_data['date']=$this->input->post('date');
 		$inv_data['invoice_total']=$this->input->post('total');
+		$inv_data['description']=$this->input->post('description');
 		
 		$form_data['item_id'] =	$this->input->post('p_name');
 		$form_data['qty'] =	$this->input->post('qty');
@@ -261,7 +264,16 @@ class Customer extends CI_Controller {
     }
 
 }
+ public function fetch_customer_prev()
+	{
+    $this->load->model('mdl_customer');
+    $customer_name=$this->input->post('customer_name');
+    if($customer_name)
+    {
+        echo $this->mdl_customer->fetchcustomer_prev($customer_name);
+    }
 
+}
 	public function return_cylinder()
 	{
 		$this->load->model('mdl_customer');
@@ -299,5 +311,171 @@ public function insert_return_item()
 				$this->session->set_flashdata('error','Some thing went wrong');
 				}
 }	
+
+
+public function all_return_cylinder()
+{
+	$this->load->model('mdl_customer');
+	// $data['item']=$this->mdl_product->get_item();
+	// $data['customer']=$this->mdl_customer->get_customer();
+	// $data['query']=$this->mdl_customer->fetch_invoice($id);
+	$data['query']=$this->mdl_customer->fetch_return_cylinder();
+	$row=$data['query']->row_array();
+	$data['invoice_no']=$row['invoice_no'];
+	$this->load->view('all_return_cylinder',$data);
+}
+
+public function edit_return_cylinder($id)
+{
+	$this->load->model('mdl_product');
+	$this->load->model('mdl_customer');
+	$data['item']=$this->mdl_product->get_item();
+	$data['customer']=$this->mdl_customer->get_customer();
+	$data['query']=$this->mdl_customer->fetch_invoice($id);
+	$rows=$data['query']->row_array();
+	$data['date']=$rows['date'];
+	$data['inv_no']=$rows['invoice_no'];
+	$data['cus_id']=$rows['customer_id'];
+	$data['description']=$rows['description'];
+	$data['id']=$id;
+	$this->load->view('edit_return_cylinder',$data);
+}
+
+public function edit_return_cylinder_form($id)
+{
+	$form_data['invoice_no'] =	$this->input->post('invno');
+	$form_data['customer_id'] =	$this->input->post('customer');
+	$form_data['p_id'] =	$this->input->post('p_name');
+	$form_data['qty'] =	$this->input->post('qty');
+	$form_data['date'] =	$this->input->post('date');
+	$form_data['description'] =	$this->input->post('description');
+
+
+	$this->load->model('mdl_customer');
+		
+	$query=$this->mdl_customer->edit_return_cylinder($form_data,$id);
+		if($query)
+		{
+			 $this->session->set_flashdata('success','Return Cylinder Invoice sucessfuly Edit');
+			 redirect('customer/all_return_cylinder');
+		}
+		else{
+			$this->session->set_flashdata('error','Some thing went wrong');
+			}
+
+}
+
+public function delete_return_cylinder($id)
+{
+	$this->load->model('mdl_customer');
+		$query=$this->mdl_customer->delete_return_cylinder_inv($id);
+
+		if($query)
+		{
+			$this->session->set_flashdata('success', 'Return Cylinder Invoice Deleted Succesfully');
+			redirect('customer/all_return_cylinder');
+		}
+		else{
+			$this->session->set_flashdata('error', 'Error');
+			redirect('customer/index');
+		}
+}
+
+public function payment()
+{
+	$this->load->model('mdl_customer');
+	$data['customer']=$this->mdl_customer->get_customer();
+	$data['invno']=$this->mdl_customer->get_payment_inv_no();
+	$this->load->view('payment',$data);
+}
+public function insert_payment()
+{
+	
+	$form_data = array();
+
+	$form_data['customer_id'] =	$this->input->post('customer');
+	$form_data['invoice_no']=$this->input->post('invno');
+	$form_data['amount'] =	$this->input->post('amount');
+	$form_data['date'] =	$this->input->post('date');
+	$form_data['description'] =	$this->input->post('description');
+	$this->load->model('mdl_customer');
+		
+	$query=$this->mdl_customer->insert_payment($form_data);
+		if($query)
+		{
+			 $this->session->set_flashdata('success','Cylinder sucessfuly Return');
+			 redirect('customer/payment');
+		}
+		else{
+			$this->session->set_flashdata('error','Some thing went wrong');
+			}
+	
+}
+
+public function all_return_payment()
+{
+
+	$this->load->model('mdl_customer');
+	$data['query']=$this->mdl_customer->fetch_ret_pay();
+	$this->load->view('all_customer_payment',$data);
+}
+
+public function edit_return_payment($id)
+{
+
+	$this->load->model('mdl_customer');
+	$data['customer']=$this->mdl_customer->get_customer();
+	$data['query']=$this->mdl_customer->get_cust_returnpay($id);
+	$this->load->view('edit_return_payment',$data);
+}
+
+public function update_payment($id)
+{
+	$form_data = array();
+
+	$form_data['customer_id'] =	$this->input->post('customer');
+	$form_data['invoice_no']=$this->input->post('invno');
+	$form_data['amount'] =	$this->input->post('amount');
+	$form_data['date'] =	$this->input->post('date');
+	$form_data['description'] =	$this->input->post('description');
+	$this->load->model('mdl_customer');
+		
+	$query=$this->mdl_customer->update_payment($form_data,$id);
+		if($query)
+		{
+			 $this->session->set_flashdata('success','Return Amount Updated');
+			 redirect('customer/all_return_payment');
+		}
+		else{
+			$this->session->set_flashdata('error','Some thing went wrong');
+			}
+	
+}
+
+public function delete_payment($id)
+{
+	$this->load->model('mdl_customer');
+	$query=$this->mdl_customer->delete_ret_payment($id);
+	if($query)
+		{
+			 $this->session->set_flashdata('success','Return Amount Deleted');
+			 redirect('customer/all_return_payment');
+		}
+		else{
+			$this->session->set_flashdata('error','Some thing went wrong');
+			}
+
+}
+
+function model()
+{
+	$this->load->model('mdl_customer');
+	$cus_id=$this->input->post('cus_id');
+	if($cus_id)
+	{
+
+  $query=$this->mdl_customer->model($cus_id);
+	}
+}
 
 }
