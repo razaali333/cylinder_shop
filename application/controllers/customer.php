@@ -22,6 +22,8 @@ class Customer extends CI_Controller {
 	{
 		$this->load->model('mdl_region');
 		$this->load->model('mdl_customer');	
+		$this->load->model('mdl_product');	
+		$data['item']=$this->mdl_product->get_item();
 		$data['customer']=$this->mdl_customer->get_customer();
 		$data['query']=$this->mdl_region->get_region();
 		$this->load->view('add_customer',$data);
@@ -35,9 +37,11 @@ class Customer extends CI_Controller {
 				'shop_name'=>	ucfirst($this->input->post('shop_name')),
 				'mobile'=>	ucfirst($this->input->post('mobile')),
 				'opening_balance'=>	ucfirst($this->input->post('opening_balance')),
-				'opening_quantity'=>	ucfirst($this->input->post('opening_quantity')),
-				'region'		=>	ucfirst($this->input->post('region')),
+				'region'		=>	ucfirst($this->input->post('region'))
 			);
+		
+
+
 
 		$this->load->library('form_validation');
 		$this->form_validation->set_rules('name', 'Customer', 'trim|required');
@@ -56,7 +60,12 @@ class Customer extends CI_Controller {
 			else{
 
 
-			$query=$this->mdl_customer->insert($data);
+			$this->mdl_customer->insert($data);
+			$cus_id=$this->db->insert_id();
+			$form_data['customer_id']=$cus_id;
+			$form_data['item_id']=$this->input->post('item_id');
+			$form_data['qty']=$this->input->post('qty');
+			$query=$this->mdl_customer->insert_open_qty($form_data);	
 				if($query)
 				{
 					 $this->session->set_flashdata('success','Customer Added sucessfuly');
@@ -74,12 +83,24 @@ class Customer extends CI_Controller {
 	{
 		$this->load->model('mdl_customer');
 		$this->load->model('mdl_region');
+		$this->load->model('mdl_product');	
+		$data['item']=$this->mdl_product->get_item();
 		$data['query']=$this->mdl_customer->fetch_customer($id);
 		$data['regions']=$this->mdl_region->get_region();
-		$this->load->view('edit_costumer',$data);
+		$object['controller']=$this; 
+		$this->load->view('edit_costumer',$data,$object);
+		 
 
 	}
 
+	function fetch_qty_by_customer($item_id,$customer_id)
+	{
+
+		$this->load->model('mdl_customer');
+		 $query=$this->mdl_customer->fetch_qty_by_customer($item_id,$customer_id);
+		 $row= $query->row_array();
+		 echo $row['qty'];
+	}
 	public function edit_customer_form($id)
 	{
 		$data=array(
@@ -88,7 +109,6 @@ class Customer extends CI_Controller {
 				'shop_name'=>	ucfirst($this->input->post('shop_name')),
 				'mobile'=>	ucfirst($this->input->post('mobile')),
 				'opening_balance'=>	ucfirst($this->input->post('opening_balance')),
-				'opening_quantity'=>	ucfirst($this->input->post('opening_quantity')),
 				'region'		=>	ucfirst($this->input->post('region')),
 			);
 
@@ -103,7 +123,11 @@ class Customer extends CI_Controller {
 			$this->load->model('mdl_customer');
 			
 
-			$query=$this->mdl_customer->update_customer($data,$id);
+			$this->mdl_customer->update_customer($data,$id);
+			$form_data['customer_id']=$id;
+			$form_data['item_id']=$this->input->post('item_id');
+			$form_data['qty']=$this->input->post('qty');
+			$query=$this->mdl_customer->update_customer_open_qty($form_data,$id);
 				if($query)
 				{
 					 $this->session->set_flashdata('success','Customer Edit sucessfuly');
@@ -139,6 +163,7 @@ class Customer extends CI_Controller {
 		$this->load->model('mdl_customer');
 		$this->load->model('mdl_product');
 		$data['customer']=$this->mdl_customer->get_customer();
+		
 		$data['item']=$this->mdl_product->get_item();
 		$data['invno']=$this->mdl_customer->get_invno();
 		$this->load->view('sale_invoice',$data);
@@ -161,9 +186,11 @@ class Customer extends CI_Controller {
 		);
 
 		$form_data['item_id'] =	$this->input->post('p_name');
+		$form_data['customer_id'] =	$this->input->post('customer');
 		$form_data['qty'] =	$this->input->post('qty');
 		$form_data['price'] =	$this->input->post('price');
 		$form_data['item_total'] =	$this->input->post('subtotal');
+		
 		
 		// print_r($form_data['item_id']);exit();
 
@@ -236,6 +263,7 @@ class Customer extends CI_Controller {
 		$inv_data['description']=$this->input->post('description');
 		
 		$form_data['item_id'] =	$this->input->post('p_name');
+		$form_data['customer_id']=$this->input->post('customer');
 		$form_data['qty'] =	$this->input->post('qty');
 		$form_data['price'] =	$this->input->post('price');
 		$form_data['item_total'] =	$this->input->post('subtotal');
@@ -274,6 +302,17 @@ class Customer extends CI_Controller {
     }
 
 }
+
+// public  function ret_pay()
+// 	{
+//     $this->load->model('mdl_customer');
+//     $customer_name=$this->input->post('customer_name');
+//     if($customer_name)
+//     {
+//         echo $this->mdl_customer->ret_pay($customer_name);
+//     }
+
+// }
 	public function return_cylinder()
 	{
 		$this->load->model('mdl_customer');
@@ -477,5 +516,47 @@ function model()
   $query=$this->mdl_customer->model($cus_id);
 	}
 }
+
+public function fetch_customer_openqty()
+		{
+	 	$this->load->model('mdl_product');
+	    $customer_name=$this->input->post('customer_name');
+	    if($customer_name)
+	    {
+	     $this->mdl_product->fetchcustomer_openqty($customer_name);
+	    }
+		}
+
+public function test()
+{
+	
+		// echo $customer;
+	  $this->load->model('mdl_product');
+
+	  	$customer_id=$this->input->post('customer_id');
+
+	  $this->mdl_product->fetchcust_openqty($customer_id);
+	 // echo  $row=$o_qty->row_array();
+         
+
+	 //  // $s_qty = $this->mdl_product->fetchcustomer_saleqty($item_id, $customer_id);
+	 //  // $r_qty = $this->mdl_product->fetchcustomer_returnqty($item_id, $customer_id);
+	 
+	 // // $qty = ($o_qty + $s_qty) - $r_qty;
+	   // echo $row;
+}	
+
+public function test2($p_id,$customer_id)
+{
+	 
+
+	 $this->load->model('mdl_product');
+
+		$output = $this->mdl_product->fetchcustomer_returnqty($p_id, $customer_id);	
+	
+	   echo $output;
+	  	
+}	 
+
 
 }

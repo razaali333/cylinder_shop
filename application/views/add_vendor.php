@@ -33,12 +33,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Edit Customer page
+        Add User page
         <small>it all starts here</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Edit Customer page</li>
+        <li class="active">Add User page</li>
       </ol>
     </section>
 
@@ -102,100 +102,103 @@
           <!-- Horizontal Form -->
           <div class="box box-info">
             <div class="box-header with-border">
-            	<?php extract($query) ?>
-              <h3 class="box-title">Edit Customer Form</h3>
+              <h3 class="box-title">Add Vendor Form</h3>
             </div>
             <!-- /.box-header -->
             <!-- form start -->
-            <form class="form-horizontal" method="post" action="<?php echo base_url('customer/edit_customer_form/'.$id.'') ?>">
+            <form class="form-horizontal" method="post" action="<?php echo base_url() ?>vendor/add_vendor_form">
               <div class="box-body">
-                 <div class="form-group">
-                  <label for="inputEmail3" class="col-sm-3 control-label">Customer Name</label>
-
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control" id="inputEmail3" name="name" value="<?php echo  $name ?>">
-                  </div>
-                </div>
-               
-               <div class="form-group">
-                  <label for="inputPassword3" class="col-sm-3 control-label">Customer Shop Name</label>
-
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control" id="inputPassword3" name="shop_name" value="<?php echo  $shop_name ?>">
-                  </div>
-                </div>
-
                 <div class="form-group">
-                  <label for="inputPassword3" class="col-sm-3 control-label">Customer Mobile No</label>
+                  <label for="inputEmail3" class="col-sm-2 control-label">Vendor Name</label>
 
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control" id="inputPassword3" maxlength="11" name="mobile" value="<?php echo  $mobile ?>">
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputEmail3" name="vendor_name" placeholder="Vendor Name">
                   </div>
                 </div>
+                <div class="form-group">
+                  <label for="inputPassword3" class="col-sm-2 control-label">Shop Name</label>
 
-        <div class="form-group">
-                  <label for="inputPassword3" class="col-sm-3 control-label">Customer Opening Balance</label>
-
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control" id="inputPassword3" name="opening_balance" value="<?php echo  $opening_balance ?>">
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputPassword3" name="shop" placeholder="Shop Name">
                   </div>
                 </div>
-
-              
-
-
-               <div class="form-group">
-                <label for="inputPassword3" class="col-sm-3 control-label">Region</label>
-                <div class="col-sm-9">
-                  <select class="form-control select2" name="region">
-                    <?php foreach($regions->result() as $row){ ?>
-                  <option value="<?php echo $row->id; ?>" <?php if($region==$row->id) { ?> selected="selected" <?php } ?> > <?php echo $row->region_name ?></option>
-                    
-              <?php } ?>
-                </select>
-                </div>
-              </div>
                 
+                <div class="form-group">
+                  <label for="inputPassword3" class="col-sm-2 control-label">Mobile</label>
+
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputPassword3" name="mobile" placeholder="Contact No">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputPassword3" class="col-sm-2 control-label">Address</label>
+
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputPassword3" name="address" placeholder="Address">
+                  </div>
+                </div>
+                 
               </div>
         <!-- /.box-body -->
 		<div class="box-footer">
-                <a href="<?php echo base_url() ?>customer/index" class="btn btn-default">Cancel</a>
-                <button type="submit" class="btn btn-info pull-right col-sm-4">Edit User</button>
+                <a href="<?php echo base_url() ?>login/dashboard" class="btn btn-default">Cancel</a>
+                <button type="submit" class="btn btn-info pull-right col-sm-4">Add Vendor</button>
               </div>
               <!-- /.box-footer -->
-           
+            </form>
           </div>
 
-      
-      </div>
-      <div class="col-md-6">
-      
-          <div class="row">
-            <?php foreach($item->result() as $row_item){ ?>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label for=""><?php echo $row_item->product_name ?></label>
-                <?php 
-                   $CI  = & get_instance();
-                    $item_id=$row_item->id;
-                    $customer_id=$id;   
-                 ?>
-                <input type="text" name="qty[]" value="<?php echo $result = $CI->fetch_qty_by_customer($item_id,$customer_id); ?>" class="form-control">
-                <input type="hidden" name="item_id[]" value="<?php echo $row_item->id ?>">
-              </div>
-            </div>
-          <?php } ?>
-          </div>
-       
+        
       </div>
       <!-- /.box -->
-      </form>
+  <div class="box-footer">
+         <div class="row">
+           <div class="col-md-12">
+               <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>S NO</th>
+                  <th>Vendor Name</th>
+                  <th>Shop Name</th>
+                  <th>Mobile</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php 
+                    $count=0;
+                  foreach($query->result() as $row){
+                      $count++;
+                   ?>
+                <tr>
+                  <td><?php echo $count; ?></td>
+                  <td><?php echo $row->vendor_name ?> </td>
+                  <td><?php echo $row->shop ?> </td>
+                  <td><?php echo $row->mobile ?> </td>
+                    <td><a href="<?php echo base_url('vendor/edit_vendor/'.$row->id.'') ?>" class="btn btn-primary"><span class="fa fa-edit"></span></a></td>
+                  <td><a href="<?php echo base_url('user/delete_vendor/'.$row->id.'') ?>" class="btn btn-danger"><span class="fa fa-trash"></span></a></td>
+                </tr>
+               <?php } ?>
+                  
+            </tbody>      
+              </table>
+           </div>
+         </div>
+        </div>
+        <!-- /.box-footer-->
     </section>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
 
-  <?php include('include/footer.php'); ?>
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 2.4.0
+    </div>
+    <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
+    reserved.
+  </footer>
 
  <!-- /.control-sidebar -->
   <!-- Add the sidebar's background. This div must be placed
@@ -206,7 +209,8 @@
 	<?php include('include/foot.php'); ?>
 <script>
   $(document).ready(function () {
-    $('.sidebar-menu').tree()
+    $('.sidebar-menu').tree();
+
      $('#example2').DataTable()
     $('#example1').DataTable({
       'paging'      : true,
@@ -216,6 +220,7 @@
       'info'        : true,
       'autoWidth'   : false
     })
+
   })
 </script>
 </body>

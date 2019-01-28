@@ -76,7 +76,7 @@
               <div class="col-xs-2" style="margin-left: 4px;">
             
             <label for="">Select Customer</label>
-            <select name="customer" id="customer" required="" class="form-control">
+            <select name="customer" id="customer" required=""   class="form-control cust">
               <option value=""  selected="">Select Customer</option>
                <?php foreach($customer->result() as $row)
                   {?>
@@ -106,7 +106,7 @@
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="date" class="form-control pull-right input-sm" value="<?php echo date("d/m/Y"); ?>">
+                  <input type="text" name="date" class="form-control pull-right input-sm" value="<?php echo date("Y/m/d"); ?>">
                 </div>
                 <!-- /.input group -->
               </div>
@@ -135,10 +135,10 @@
                   {  
                     ?>
 
-                    <option value="<?php echo $row->id ?>"><?php echo $row->product_name; ?></option>
+                    <option value="<?php echo $row->id ?>" ><?php echo $row->product_name; ?></option>
                   <?php } ?>
                 </select></td>
-
+                            
               <td><input type="text" name="qty[]"  required="" pattern="^[1-9][0-9]*$" class="form-control qty" placeholder="quantity"></td>
 
               <td><input type="text" name="price[]" required=""  pattern="^[1-9][0-9]*$" class="form-control price" id="price" placeholder="price"></td>
@@ -163,10 +163,8 @@
               <div class="box-footer">
              <!-- /.col -->
               <div class="row">
-                <div class="col-sm-3 col-sm-offset-5">
-                  <textarea name="description" class="form-control" id="" cols="30" rows="5" placeholder="Description..."></textarea>
-                </div>
-                 <div class="col-sm-3 pull-right">
+              
+                <div class="col-sm-3 pull-right">
           <button type="button" class="btn btn-primary pull-right" id="click"><i class="fa fa-plus"></i></button>
           <p class="lead">Amount Due <?php echo date("D/M/Y") ?></p>
 
@@ -191,17 +189,17 @@
             </table>
             </div>
           </div>
-              </div>
-              <div class="row" id="product">
-                  <?php foreach( $item->result() as $rows){ ?>
-                   <div class="col-<?php if(strlen(trim($rows->product_name))>=11){?>sm-2<?php }else{?>sm-1<?php } ?>">
-                     <label for="" class="control-label" style="font-size: 12px;"><?php echo $rows->product_name ?> </label>
-                     <input type="text" class="form-control" readonly="">
-                   </div>
-                 <?php } ?>
-
+                <div class="col-sm-3 pull-right">
+                  <textarea name="description" class="form-control" id="" cols="30" rows="5" placeholder="Description..."></textarea>
+                </div>
+                 <div class="col-sm-6">
+                   <div class="row" id="product">
                   
+
+                 </div>
+                 <p id="p"></p>
               </div>
+             
             </form>
           
       <!-- Default box -->
@@ -224,19 +222,16 @@
 </div>
 <!-- ./wrapper -->
   <?php include('include/foot.php'); ?>
-  <script>
-    $('#product').hide();
-    $('#customer').on('change',function(){
+   <script>
+    
+
      
-      var customer=$("#customer").val();
-      if(customer=='')
-      {
-        $("#product").hide();
-      }
-      else{
-        $("#product").show(); 
-      }
-    })
+
+  
+  </script>
+  <script>
+   
+
     $(function(){
          $('#customer').on("change",function(){
                  var customer_name=$('#customer').val();
@@ -253,45 +248,134 @@
                      });
                  }
          });  
+       });
+             $(function(){
+             $('#customer').on("change",function(){
+                     var customer_name=$('#customer').val();
+                     if(customer_name !='')
+                     {
+                         $.ajax({
+                               url:"<?php echo base_url('customer/fetch_customer_prev'); ?>",
+                               method:"POST",
+                               data:{customer_name:customer_name},
+                               success:function(data)
+                               {
+                                
+                                   $('#prev').html(data);
+                                
+                               }
+
+                         });
+                     }
+                     else{
+                        $('.prev_bln').val('0');
+                     }
+             });  
+        });
          $(function(){
          $('#customer').on("change",function(){
-                 var customer_name=$('#customer').val();
-                 if(customer_name !='')
+                 var customer_id=$('.cust').val();
+                 
+                 if(customer_id !='')
                  {
                      $.ajax({
-                           url:"<?php echo base_url('customer/fetch_customer_prev'); ?>",
+                           url:"<?php echo base_url('customer/test'); ?>",
                            method:"POST",
-                           data:{customer_name:customer_name},
+                           data:{customer_id:customer_id},
                            success:function(data)
                            {
                             
-                               $('#prev').html(data);
-                            
-                           }
 
+                          var str='';
+                         
+                             $.each(JSON.parse(data), function (i, item){
+                               var item_id=item.item_id;
+                               
+                                   total=Number(item.qty)+Number(item.s_qty)-Number(item.r_qty);  
+                               
+                              
+                               // returns(item_id);
+                                str+='<div class="col-xs-3">';
+                                str+='<label for="">'+item.product_name+'</label>';
+                             // if(item.r_qty!='')
+                             // {
+                        str+='<input type="text" readonly="" style="font-weight:bold" value="'+total+'" id="quantaties" class="form-control">';      
+                            // }
+                             // else{
+                             //  str+='<input type="text" readonly="" style="font-weight:bold" value="'+item.qty+'" id="quantaties" class="form-control">';
+                             // }
+                        
+
+                       
+                            
+                              str+='</div>';  
+                              
+                              // console.log(item_id);
+                              
+                            });
+
+                             $('#product').html(str);    
+                           }
                      });
-                 }
+                   
+                   }
                  else{
-                    $('.prev_bln').val('0');
+                    $('#product').html('<p>NO Record Found</p>');
                  }
-         });  
-    });
-    });
+         });
+
+        // function returns(item_id)
+        // {
+        //      var customer_id=$('.cust').val();
+        //     var item_id=item_id;
+
+        //    $.ajax({
+        //                    url:"<?php //echo base_url('customer/test2'); ?>",
+        //                    method:"POST",
+        //                    data:{customer_id:customer_id,item_id:item_id},
+        //                    success:function(item)
+        //                    {
+                              
+        //                      //  var str='';
+        //                      // $.each(JSON.parse(data), function (i, item){
+        //                       item=JSON.parse(item);
+        //                       for(var i=0;i<qty.lenght;i++){
+        //                       str='<input type="text" readonly="" style="font-weight:bold" value="'+qty[i]+'" id="quantaties" class="form-control">';     
+        //                         console.log(qty[i]);
+        //                       // $('#p').html(item[i].qty);  
+        //                     }
+                                  
+        //                 //   
+        //                         // console.log(item.qty[i])      
+                                  
+
+                                     
+        //                      // });
+        //                    }
+        //                      });
+        // } 
+
+    }); 
   </script>
   <script>
+    $(document).ready(function(){
+        var n=1;
   	$(function(){
   		 $(document).on('click','#click',function(){
              add_new_row();
   
 
     });
+     
 
   	 function add_new_row()
     {
+     
 
-      
+
+       n=n+1;
       var row='<tr id="row_id">'+
-              '<th><b class="no"></b></th>'+
+              '<th><b class="no">'+n+'</b></th>'+
                '<td><select name="p_name[]" id="" class="form-control">'+
                   '<option value="" disabled="" selected="">Select Item</option>'+
                   '<?php foreach($item->result() as $row) {   ?>'+
@@ -302,19 +386,30 @@
 
               '<td><input type="text" name="qty[]" class="form-control qty" placeholder="quantity"></td>'+
 
-              '<td><input type="text" name="price[]" class="form-control price" placeholder="price"></td>'+
+           '<td><input type="text" name="price[]" required=""  pattern="^[1-9][0-9]*$" class="form-control price" id="price" placeholder="price"></td>'+
 
               '<td><input type="text" readonly="" name="subtotal[]" class="form-control amt"></td>'+
               '<td><td><span class="btn btn-danger" type="button" id="remove"><i class="fa fa-remove"></></span></td></td>'+
               '</tr>';
               $('#inv_detail').append(row);
-    }	 
+    }	
+          
+             $(price).on('keypress',function(e){
+       
+              if(e.keyCode == 13) {
+                     e.preventDefault();
+                          add_new_row();
+                                  }
+    
+                         });
+       
 
      $(document).on('click', '#remove', function () {
          $(this).closest('tr').remove();
         //return false;
         // alert();
         total();
+        n=n-1;
       });
 
      $('#inv_detail').delegate('.qty,.price','keyup',function(){
@@ -351,6 +446,7 @@
     }
 
   	});
+    });
   </script>
 <script>
   $(document).ready(function () {
@@ -359,6 +455,8 @@
    $('#datepicker').datepicker({
       autoclose: true
     })
+
+   
 </script>
 
 </body>

@@ -243,6 +243,7 @@
         //return false;
         // alert();
         total();
+        n=n-1;
       });
        
       $('#inv_detail').delegate('.qty,.price','keyup',function(){
@@ -271,7 +272,7 @@
     {
 
       
-       n=n+1;
+       n=n+2;
       var row='<tr id="row_id_'+n+'">'+
               '<th><b class="no">'+n+'</b></th>'+
                '<td><select name="p_name[]" id="" class="form-control">'+

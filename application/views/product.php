@@ -112,10 +112,17 @@
                   <label for="inputEmail3" class="col-sm-3 control-label">Cylinder Name</label>
 
                   <div class="col-sm-9">
-                    <input type="text" class="form-control" id="inputEmail3" name="name" placeholder="Cylinder Name">
+                    <input type="text" class="form-control" id="inputEmail3" name="name" placeholder="Cylinder Name" required="">
                   </div>
                 </div>
                
+                <div class="form-group">
+                  <label for="inputEmail3" class="col-sm-3 control-label">Quantity</label>
+
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="inputEmail3" name="quantity" placeholder="Add Quantity" >
+                  </div>
+                </div>
 
                <div class="form-group">
                 <label for="inputPassword3" class="col-sm-3 control-label">Agency</label>
@@ -151,6 +158,7 @@
                 <tr>
                   <th>S NO</th>
                   <th>Product Name</th>
+                  <th>Quantity</th>
                   <th>Agency</th>
                   <th>Edit</th>
                   <th>Delete</th>
@@ -166,7 +174,7 @@
                 <tr>
                   <td><?php echo $count; ?></td>
                   <td><?php echo $row->product_name ?> </td>
-                
+                  <td><?php echo $row->qty ?> </td>
                   <td><?php echo $row->agency_name ?></td>
                  
                      <td><a href="<?php echo base_url('product/edit_item/'.$row->id.'') ?>" class="btn btn-primary"><span class="fa fa-edit"></span></a></td>

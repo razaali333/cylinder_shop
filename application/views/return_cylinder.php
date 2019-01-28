@@ -106,7 +106,7 @@
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="date" class="form-control pull-right input-sm" value="<?php echo date("d/m/Y"); ?>">
+                  <input type="text" name="date" class="form-control pull-right input-sm" value="<?php echo date("Y/m/d"); ?>">
                 </div>
                 <!-- /.input group -->
               </div>
@@ -158,15 +158,10 @@
           <!-- /.col -->
        
 				<div class="row">
-					<div class="col-sm-3 col-sm-offset-6">
-						<div class="form-group">
-					  <textarea class="form-control" name="description" rows="5" id="comment" placeholder="Description..."></textarea>
-					</div>
-					</div>
-					<div class="col-sm-3 pull-right">
+          <div class="col-sm-3 pull-right" style="margin-top: 15px;">
           <button type="button" class="btn btn-primary pull-right" id="click"><i class="fa fa-plus"></i></button>
           <p class="lead">Amount Due <?php echo date("D/M/Y") ?></p>
-			
+      
           <div class="table-responsive">
 
             <table class="table">
@@ -176,12 +171,25 @@
               </tr>
              
             </table>
-            </form>
+            
           </div>
+
           </div>
+					 <div class="col-sm-3 pull-right">
+                  <textarea name="description" class="form-control" id="" cols="30" rows="5" placeholder="Description..."></textarea>
+                </div>
+                 <div class="col-sm-6">
+                   <div class="row" id="product">
+                  
+
+                 </div>
+                 <p id="p"></p>
+              </div>
+					
 				</div>	
         	
           </div>
+          </form>
       <!-- Default box -->
     </section>
         </div>
@@ -220,8 +228,64 @@
                  }
          });  
     });
+
+     $(function(){
+         $('#customer').on("change",function(){
+                 var customer_id=$('#customer').val();
+                 
+                 if(customer_id !='')
+                 {
+                     $.ajax({
+                           url:"<?php echo base_url('customer/test'); ?>",
+                           method:"POST",
+                           data:{customer_id:customer_id},
+                           success:function(data)
+                           {
+                            
+
+                          var str='';
+                         
+                             $.each(JSON.parse(data), function (i, item){
+                               var item_id=item.item_id;
+                               
+                                   total=Number(item.qty)+Number(item.s_qty)-Number(item.r_qty);  
+                               
+                              
+                               // returns(item_id);
+                                str+='<div class="col-xs-3">';
+                                str+='<label for="">'+item.product_name+'</label>';
+                             // if(item.r_qty!='')
+                             // {
+                        str+='<input type="text" readonly="" style="font-weight:bold" value="'+total+'" id="quantaties" class="form-control">';      
+                            // }
+                             // else{
+                             //  str+='<input type="text" readonly="" style="font-weight:bold" value="'+item.qty+'" id="quantaties" class="form-control">';
+                             // }
+                        
+
+                       
+                            
+                              str+='</div>';  
+                              
+                              // console.log(item_id);
+                              
+                            });
+
+                             $('#product').html(str);    
+                           }
+                     });
+                   
+                   }
+                 else{
+                    $('#product').html('<p>NO Record Found</p>');
+                 }
+         });
+         });
   </script>
   <script>
+    $(document).ready(function(){
+        var n=1;
+
   	$(function(){
   		 $(document).on('click','#click',function(){
              add_new_row();
@@ -231,9 +295,9 @@
   	 function add_new_row()
     {
 
-      
+      n=n+1;
       var row='<tr id="row_id">'+
-              '<th><b class="no"></b></th>'+
+              '<th><b class="no">'+n+'</b></th>'+
                '<td><select name="p_name[]" id="" class="form-control">'+
                   '<option value="" disabled="" selected="">Select Item</option>'+
                   '<?php foreach($item->result() as $row) {   ?>'+
@@ -251,6 +315,7 @@
 
  $(document).on('click', '#remove', function () {
          $(this).closest('tr').remove();
+         n=n-1;
          total();
     });	 
 	
@@ -276,6 +341,7 @@
 
 
   	});
+     });
   </script>
 <script>
   $(document).ready(function () {

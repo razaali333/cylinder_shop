@@ -5,12 +5,31 @@
 		//login function
   	public function insert($data)
   	{
-  			 $query=$this->db->insert('customer',$data);
-  			 return $query;
+  			return $this->db->insert('customer',$data);
+
                   
   }
   
+  public function insert_open_qty($form_data)
+  {
+    
+              
+        for($i=0;$i<sizeof($form_data['item_id']);$i++)
+        {
+            
 
+
+           $det="INSERT INTO opening_qty SET
+                `customer_id`='".$form_data['customer_id']."',
+                `item_id`='".$form_data['item_id'][$i]."',
+                `qty`='".$form_data['qty'][$i]."'
+                ";  
+                $query=$this->db->query($det); 
+            
+        }
+       
+        return $query;
+  }
   public function checkData()
 	{
  		 $name = $this->input->post('name');
@@ -29,7 +48,7 @@
 
 	public function get_customer()
 	{
-		$run="SELECT customer.id,name,shop_name,mobile,region,region_name,opening_balance,opening_quantity FROM customer JOIN region ON region.id = customer.region";
+		$run="SELECT customer.id,name,shop_name,mobile,region,region_name,opening_balance FROM customer JOIN region ON region.id = customer.region";
 		$exe=$this->db->query($run);
 		return $exe;
 	}
@@ -42,7 +61,7 @@
 
 	public function fetch_customer($id)
 	{
-		$query="SELECT * FROM `customer` WHERE id='$id'";
+		$query="SELECT customer.*,opening_qty.customer_id,opening_qty.qty,opening_qty.item_id FROM customer LEFT JOIN opening_qty ON(customer.id=opening_qty.customer_id) WHERE customer.id=$id";
 		$query=$this->db->query($query);
     return $query->row_array();
 	}	
@@ -51,8 +70,37 @@
 	{
 		$this->db->where('customer.id',$id);
 		$query=$this->db->update('customer',$data);
-		return $query;
 	}
+
+    public function update_customer_open_qty($form_data,$id)
+    {
+        $del="DELETE FROM opening_qty  WHERE customer_id=$id";
+       $exe=$this->db->query($del);
+       if($exe)
+       {
+         for($i=0;$i<sizeof($form_data['item_id']);$i++)
+        {
+            
+
+           $det="INSERT INTO opening_qty SET
+                `customer_id`='".$form_data['customer_id']."',
+                `item_id`='".$form_data['item_id'][$i]."',
+                `qty`='".$form_data['qty'][$i]."'
+                ";  
+                $query=$this->db->query($det); 
+            
+
+        }   
+
+       }
+       return $query;
+    }
+
+
+
+
+
+
 	 public function delete_customer($id)
     {
        	$query="DELETE FROM `customer` WHERE `customer`.`id` = '$id'";
@@ -69,6 +117,7 @@
 
 			 $det="INSERT INTO sale_invoice_detail SET
 				`invoice_id`=".$inv_id.",
+                `customer_id`='".$form_data['customer_id']."',
 				`item_id`='".$form_data['item_id'][$i]."',
 				`qty`='".$form_data['qty'][$i]."',
 				`price`='".$form_data['price'][$i]."',
@@ -77,6 +126,7 @@
 
 				$query=$this->db->query($det);
 		}
+        
 		return $query;
     }
 
@@ -114,6 +164,7 @@
 
 			 $det="INSERT INTO  sale_invoice_detail SET
 				`invoice_id`=".$id.",
+                `customer_id`='".$form_data['customer_id']."',
 				`item_id`='".$form_data['item_id'][$i]."',
 				`qty`='".$form_data['qty'][$i]."',
 				`price`='".$form_data['price'][$i]."',
@@ -149,18 +200,36 @@
 
      function fetchcustomer_prev($customer_name)
     {
-    	$query ="SELECT customer.opening_balance AS open_balance,sum(sale_invoice.invoice_total) AS inv_total ,sum(return_payment.amount) AS ret_pay FROM customer AS customer LEFT JOIN sale_invoice ON (customer.id=sale_invoice.customer_id) LEFT JOIN return_payment ON(customer.id=return_payment.customer_id) WHERE customer.id='$customer_name'";
+    	$query ="SELECT customer.opening_balance AS open_balance,sum(return_payment.amount) AS ret_pay FROM customer AS customer LEFT JOIN return_payment ON(customer.id=return_payment.customer_id) WHERE customer.id='$customer_name'";
     	$exe=$this->db->query($query);
             $row=$exe->row_array();
+
+        $query2="SELECT sum(sale_invoice.invoice_total) AS s_pay FROM customer AS customer LEFT JOIN sale_invoice ON(customer.id=sale_invoice.customer_id) WHERE customer.id='$customer_name'";
+         $exe2=$this->db->query($query2);
+            $row2=$exe2->row_array();   
+
+           $inv_tot=$row2['s_pay']; 
+               
             $opn_bln=$row['open_balance'];
-            $inv_tot=$row['inv_total'];
+            // $inv_tot=$row['inv_total'];
             $ret_pay=$row['ret_pay'];
            
-           $total=$opn_bln+$inv_tot-$ret_pay;
+           $total=(int)$opn_bln+(int)$inv_tot-(int)$ret_pay;
          	$output='<input type="text" readonly=""  style="font-weight:bold" value="'.$total.'" class="form-control prev_bln">';		
          		
             return $output;
     }
+
+    // function ret_pay($customer_name)
+    // {
+    //     $query2="SELECT sum(sale_invoice.invoice_total) AS s_pay FROM customer AS customer LEFT JOIN sale_invoice ON(customer.id=sale_invoice.customer_id) WHERE customer.id='$customer_name'";
+    //      $exe2=$this->db->query($query2);
+    //         $row2=$exe2->row_array();   
+    //        $inv_tot=$row2['s_pay']; 
+    //      $output='<input type="text" readonly=""  style="font-weight:bold" value="'.$inv_tot.'" class="form-control sal_bln">';  
+    //      return $output;
+    // }
+
 
     public function get_return_invno()
 	{
@@ -296,6 +365,15 @@
             	echo json_encode($exe);
             return $exe;
     	}
+
+
+
+        public function fetch_qty_by_customer($item_id,$customer_id)
+        {
+            $query="SELECT * FROM opening_qty WHERE customer_id='$customer_id' AND item_id='$item_id'";
+            $query=$this->db->query($query);
+            return $query;
+        }
 	 }
 
 

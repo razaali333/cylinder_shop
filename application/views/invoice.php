@@ -102,7 +102,7 @@
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="date" class="form-control pull-right input-sm" value="<?php echo date("d/m/Y"); ?>">
+                  <input type="text" name="date" class="form-control pull-right input-sm" value="<?php echo date("Y/m/d"); ?>">
                 </div>
                 <!-- /.input group -->
               </div>
@@ -211,24 +211,11 @@
     })
 </script>
 <script>
+   
+
       $(document).ready(function(){
         var n=1;
 
-    $(document).on('click','.rem',function(){
-      
-        var row_id=$(this).attr("id");
-      $("#row_id_"+row_id).remove();
-      // var n=1;
-      // var row_id=$(this).attr("id");
-      // var total=$('.amt'+row_id).html();
-      // var s_total=$('.total'+row_id).html();
-      // var g_total=parseFloat(s_total)-parseFloat(total);
-      // $('.g_total').text(g_total);
-      // $('#row_id_'+row_id).remove();
-      // n=n-1;
-      // $('#total_item').val(n);
-    });
-  
     $(document).on('click','#click',function(){
             add_new_row();
 
@@ -237,6 +224,7 @@
          $(this).closest('tr').remove();
         //return false;
         // alert();
+          n=n-1;
         total();
       });
       

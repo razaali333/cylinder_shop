@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | Blank Page</title>
+  <title>Dashboard</title>
 <?php include('include/head.php'); ?>
 
   <!-- Google Font -->
@@ -28,13 +28,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Blank page
+        Dashboard
         <small>it all starts here</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Examples</a></li>
-        <li class="active">Blank page</li>
+        <li class="active">Dashboard</li>
       </ol>
     </section>
 

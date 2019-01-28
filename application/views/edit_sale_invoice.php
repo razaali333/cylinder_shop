@@ -263,6 +263,7 @@
          $(this).closest('tr').remove();
         //return false;
         // alert();
+        n=n-1;
         total();
       });
        

@@ -29,11 +29,13 @@ class Product extends CI_Controller {
 		$this->load->view('product',$data);
 	}
 
+
 	public function insert()
 	{
 		$data=array(
 
 				'product_name'=>	ucfirst($this->input->post('name')),
+				'qty'=>	ucfirst($this->input->post('quantity')),
 				'agency_id'=>	ucfirst($this->input->post('agency'))
 			);
 
@@ -129,6 +131,7 @@ class Product extends CI_Controller {
 			$this->load->model('mdl_product');
 			$this->load->library('form_validation');
 		$data['product_name']=ucfirst($this->input->post('edit_product'));
+		$data['qty']=ucfirst($this->input->post('edit_qty'));
 		$data['agency_id']=ucfirst($this->input->post('agency'));
 
 		$this->form_validation->set_rules('edit_product', 'Cylinder', 'trim|required');
@@ -232,5 +235,101 @@ class Product extends CI_Controller {
 			$this->session->set_flashdata('error', 'Error');
 			redirect('product/all_invoice');
 		}
+
+
 		}
+
+		public function opening_qty()
+		{
+			$this->load->model('mdl_product');
+			$this->load->model('mdl_customer');
+			$data['customer']=$this->mdl_customer->get_customer();
+			$data['inv_no']=$this->mdl_product->get_open_qty_invno();
+			$data['item']=$this->mdl_product->get_item();
+			$this->load->view('opening_qty',$data);
+		}
+
+		public function insert_opening_qty()
+		{
+			$this->load->model('mdl_product');
+
+		$form_data['customer_id']=$this->input->post('customer');
+		$form_data['item_id']=$this->input->post('p_name');
+		$form_data['qty']=$this->input->post('qty');
+		$form_data['invoice_no']=$this->input->post('invno');
+		$form_data['date']=$this->input->post('date');
+
+			$query=$this->mdl_product->insert_opn_qty($form_data);
+
+			if($query)
+			{
+				$this->session->set_flashdata('success', 'Opening Customer Cylinder Quantity Succesfully');
+			redirect('product/opening_qty');
+			}
+		}
+
+		// public function all_opening_qty()
+		// {
+		// 	$this->load->model('mdl_product');
+		// 	$data['customer']=$this->mdl_product->all_open_qty_rec();
+		// 	// $data['inv_no']=$this->mdl_product->get_open_qty_invno();
+		// 	$this->load->view('all_opening_qty',$data);
+		// }
+
+		public function edit_open_qty($id)
+		{
+			$this->load->model('mdl_product');
+			$this->load->model('mdl_agency');
+			$this->load->model('mdl_customer');
+			$data['customer']=$this->mdl_customer->get_customer();
+			$data['item']=$this->mdl_product->get_item();
+			 $data['query']=$this->mdl_product->fetch_open_qty_inv($id);
+			
+			$rows=$data['query']->row_array();
+			$data['date']=$rows['date'];
+			$data['inv_no']=$rows['invoice_no'];
+			$data['customer_id']=$rows['customer_id'];
+			// $data['inv_id']=$rows['agency_id'];
+			 $data['id']=$id;
+			// $data['description']=$rows['description'];
+			$this->load->view('edit_open_qty',$data);
+		}
+
+		public function update_opening_qty($id)
+		{
+			$form_data['customer_id'] =	$this->input->post('customer');
+			$form_data['invoice_no'] =	$this->input->post('invoice_no');
+			$form_data['item_id'] =	$this->input->post('p_name');
+			$form_data['qty'] =	$this->input->post('qty');
+			$form_data['date'] =	$this->input->post('date');
+			$this->load->model('mdl_product');
+		
+		$query=$this->mdl_product->update_open_qty($form_data,$id);
+		if($query)
+		{
+			 $this->session->set_flashdata('success','Opening Cylinder Qunatity  sucessfuly Updated');
+			 redirect('product/all_opening_qty');
+		}
+		else{
+			$this->session->set_flashdata('error','Some thing went wrong');
+			}
+		}
+
+		public function delete_opening_qty($id)
+		{
+			$this->load->model('mdl_product');
+		$query=$this->mdl_product->delete_open_qty($id);
+		if($query)
+		{
+			$this->session->set_flashdata('success', 'Deleted Succesfully');
+			redirect('product/all_opening_qty');
+		}
+		else{
+			$this->session->set_flashdata('error', 'Error');
+			redirect('product/all_opening_qty');
+		}
+		}
+
+		
+		
 }

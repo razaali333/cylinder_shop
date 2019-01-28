@@ -28,101 +28,94 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
-       
-        <li>
-          <a href="<?php echo base_url() ?>product/invoice">
-      <i class="fa fa-money"></i> &nbsp;<span style="font-size: 20px;"> Supplier Invoice</span>
+           <li class="treeview">
+          <a href="#">
+            <i class="fa fa-edit"></i> <span style="font-size: 20px;">Suppliers</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
           </a>
-        </li>
-          <li>
-          <a href="<?php echo base_url() ?>product/all_invoice">
-      <i class="fa fa-money"></i> &nbsp;<span style="font-size: 20px;"> Supplier All Invoice</span>
+       <ul class="treeview-menu">
+            <li><a href="<?php echo base_url() ?>product/invoice"><i class="fa fa-circle-o"></i> Supplier Invoice</a></li>
+            <li><a href="<?php echo base_url() ?>product/all_invoice"><i class="fa fa-circle-o"></i> Supplier All Invoice</a></li>
+            <li><a href="<?php echo base_url() ?>vendor/loan_cylinder"><i class="fa fa-circle-o"></i> Empty Loan Cylinder Invoice</a></li>
+            <li><a href="<?php echo base_url() ?>vendor/all_emp_cylinder_invoice"><i class="fa fa-circle-o"></i>All Empty Loan Cylinders </a></li>
+        </ul>
+      </li>
+        
+         <li class="treeview">
+          <a href="#">
+            <i class="fa fa-edit"></i> <span style="font-size: 20px;">Sale Invoice</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
           </a>
-        </li>
-      
-        <li>
-          <a href="<?php echo base_url() ?>customer/customer_invoice">
-      <i class="fa fa-money"></i> &nbsp;<span style="font-size: 20px;"> Sale Invoice</span>
-          </a>
-        </li>
+       <ul class="treeview-menu">
+            <li><a href="<?php echo base_url() ?>customer/customer_invoice"><i class="fa fa-circle-o"></i> Sale Invoice</a></li>
+            <li><a href="<?php echo base_url() ?>customer/all_customer_invoices"><i class="fa fa-circle-o"></i> All Sale Invoice</a></li>
+      </ul>
+    </li>
 
-        <li>
-          <a href="<?php echo base_url() ?>customer/all_customer_invoices">
-      <i class="fa fa-money"></i> &nbsp;<span style="font-size: 20px;">All Sale Invoice</span>
+       <li class="treeview">
+          <a href="#">
+            <i class="fa fa-edit"></i> <span style="font-size: 20px;">Return Cylinder</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
           </a>
-        </li>
 
-        <li>
-          <a href="<?php echo base_url() ?>customer/return_cylinder">
-      <i class="fa fa-money"></i> &nbsp;<span style="font-size: 20px;">Return Cylinder</span>
+      <ul class="treeview-menu">
+            <li><a href="<?php echo base_url() ?>customer/return_cylinder"><i class="fa fa-circle-o"></i> Return Cylinder</a></li>
+            <li><a href="<?php echo base_url() ?>customer/all_return_cylinder"><i class="fa fa-circle-o"></i> All Return Cylinder</a></li>
+      </ul>
+      </li>
+
+       <li class="treeview">
+          <a href="#">
+            <i class="fa fa-edit"></i> <span style="font-size: 20px;">Return Payment</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
           </a>
-        </li>
+      <ul class="treeview-menu">
+            <li><a href="<?php echo base_url() ?>customer/payment"><i class="fa fa-circle-o"></i> Payment</a></li>
+            <li><a href="<?php echo base_url() ?>customer/all_return_payment"><i class="fa fa-circle-o"></i> All Return Payment</a></li>
+      </ul>
+      </li>
 
-        <li>
-          <a href="<?php echo base_url() ?>customer/all_return_cylinder">
-      <i class="fa fa-money"></i> &nbsp;<span style="font-size: 20px;">All Return Cylinder</span>
+       <li class="treeview">
+          <a href="#">
+            <i class="fa fa-edit"></i> <span style="font-size: 20px;">Adding Area</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
           </a>
-        </li>
-
-        <li>
-          <a href="<?php echo base_url() ?>customer/payment">
-      <i class="fa fa-money"></i> &nbsp;<span style="font-size: 20px;"> Payment</span>
+       <ul class="treeview-menu">
+            <li><a href="<?php echo base_url() ?>product/index"><i class="fa fa-circle-o"></i> Add Cylinders</a></li>
+            <li><a href="<?php echo base_url() ?>customer/index"><i class="fa fa-circle-o"></i> Add Customer</a></li>
+            <li><a href="<?php echo base_url() ?>vendor/add_vendor"><i class="fa fa-circle-o"></i> Add Vendors</a></li>
+            <li><a href="<?php echo base_url() ?>region/index"><i class="fa fa-circle-o"></i> Add Regions</a></li>
+            <li><a href="<?php echo base_url() ?>agency/index"><i class="fa fa-circle-o"></i> Add Agency</a></li>
+            <li><a href="<?php echo base_url() ?>user/index"><i class="fa fa-circle-o"></i> Add Users</a></li>
+            <li><a href="<?php echo base_url() ?>expense/index"><i class="fa fa-circle-o"></i> Expense Accounts</a></li>
+      </ul>
+      </li>
+  
+         <li class="treeview">
+          <a href="#">
+            <i class="fa fa-edit"></i> <span style="font-size: 20px;">Reports</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
           </a>
-        </li>
-
-         <li>
-          <a href="<?php echo base_url() ?>customer/all_return_payment">
-      <i class="fa fa-money"></i> &nbsp;<span style="font-size: 20px;">All Return Payment</span>
-          </a>
-        </li>
-
-
-        <li>
-          <a href="<?php echo base_url() ?>">
-      <i class="fa fa-money"></i> &nbsp;<span style="font-size: 20px;">Register</span>
-          </a>
-        </li>
-
-        <li>
-          <a href="<?php echo base_url() ?>product/index">
-      <i class="fa fa-fire"></i> &nbsp;<span style="font-size: 20px;"> Add Cylinders</span>
-          </a>
-        </li>
-
-         <li>
-          <a href="<?php echo base_url() ?>customer/index">
-      <i class="fa fa-users"></i>&nbsp;<span style="font-size: 20px;"> Add Customer</span>
-          </a>
-        </li>
-
-         <li>
-          <a href="widgets.html">
-      <i class="fa fa-user-plus"></i>&nbsp;<span style="font-size: 20px;"> Add Vendors</span>
-          </a>
-        </li>
-
-         <li>
-          <a href="<?php echo base_url() ?>region/index">
-      <i class="fa fa-globe"></i>&nbsp;<span style="font-size: 20px;"> Add Regions</span>
-          </a>
-        </li>
-
-         <li>
-          <a href="<?php echo base_url() ?>agency/index">
-      <i class="fa fa-briefcase"></i>&nbsp;<span style="font-size: 20px;"> Add agency</span>
-          </a>
-        </li>
-
-         <li>
-          <a href="<?php echo base_url() ?>user/index">
-       <i class="fa fa-user"></i>&nbsp;<span style="font-size: 20px;"> Add Users</span>
-          </a>
-        </li>
-
-         <li>
-          <a href="<?php echo base_url() ?>expense/index">
-       <i class="fa fa-warning"></i>&nbsp;<span style="font-size: 20px;"> Expense Accounts</span>
-          </a>
+          <ul class="treeview-menu">
+            <li><a href="<?php echo base_url() ?>reports/return_report"><i class="fa fa-circle-o"></i> Daily Return Payment</a></li>
+            <li><a href="<?php echo base_url() ?>reports/return_cylinder_report"><i class="fa fa-circle-o"></i> Daily Cylinder Return</a></li>
+            <li><a href="<?php echo base_url() ?>reports/daily_sale_report"><i class="fa fa-circle-o"></i> Daily Sale Report</a></li>
+            <li><a href="<?php echo base_url() ?>reports/stock_report"><i class="fa fa-circle-o"></i> Stock Report</a></li>
+            <li><a href="<?php echo base_url() ?>reports/daily_sale_purchase_report"><i class="fa fa-circle-o"></i>Daily Sale Report</a></li>
+            <!-- <li><a href="editors.html"><i class="fa fa-circle-o"></i> Editors</a></li> -->
+          </ul>
         </li>
       </ul>
     </section>

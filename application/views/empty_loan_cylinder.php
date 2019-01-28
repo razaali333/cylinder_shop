@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -33,12 +33,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-     Return Payment
+       Supplier Invoices
         <small>it all starts here</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Sale Payment Page</li>
+        <li class="active">Invoice Page</li>
       </ol>
     </section>
 
@@ -59,11 +59,11 @@
           
           </div>
           <div  class="box-body">
-            <form action="<?php echo base_url() ?>customer/insert_payment" id="form" method="post">
+            <form action="<?php echo base_url() ?>vendor/insert_emp_cylinder_invoice" method="post">
             <div class="row">
                <div class="col-xs-8 col-xs-offset-4">
 
-             <button type="submit" class="btn btn-primary" id="submit"><i class="fa fa-save"></i></button>
+             <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i></button>
               <span class="btn btn-default"><i class="fa fa-print"></i></span>
               <span class="btn btn-info"><i class="fa fa-file"></i></span>
               <span class="btn btn-danger"><i class="fa fa-trash"></i></span>
@@ -72,24 +72,20 @@
             </div>
              
             </div>
-            <div class="row" style="margin-top: 10px;">
+            <div class="row">
               <div class="col-xs-2" style="margin-left: 4px;">
             
-            <label for="">Select Customer</label>
-            <select name="customer" id="customer" class="form-control" required="">
-              <option value=""  selected="">Select Customer</option>
-               <?php foreach($customer->result() as $row)
+            <label for="">Select Vendor</label>
+            <select name="vendor" id="" class="form-control">
+              <option value="" disabled="" selected="">Select Vendor</option>
+               <?php foreach($vendor->result() as $row)
                   {?>
 
-                    <option value="<?php echo $row->id ?>"><?php echo $row->name; ?></option>
+                    <option value="<?php echo $row->id ?>"><?php echo $row->vendor_name; ?></option>
                   <?php } ?>
             </select>
             
         </div>
-         
-         <div id="shop">
-           
-         </div>
          <div class="col-xs-1 invoice-col">
           <label for="">Invoice #</label>
            <?php $invno=$invno->row_array(); ?> 
@@ -113,28 +109,31 @@
               <!-- /.form group -->
         </div>
             </div>
-            
-           
              <div class="row invoice-info" style="margin-top: 20px;"> 
-             <div class="col-xs-8 table-responsive"> 
+             <div class="col-xs-12 table-responsive"> 
         <table class="table table-striped">
           <thead>
             <tr>
               <th>No</th>
-              <th>Payment</th>
-              <th>Previous Balance</th>
-              <th>Previous Return Payment</th>
-              <th>Remaining Balance</th>
+              <th>P_Name</th>
+              <th>Quantity</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="inv_detail">
             <tr>
               <th><b class="no">1</b></th>
+              <td><select name="p_name[]" id="" class="form-control">
+                  <option value="" disabled="" selected="">Select Item</option>
+                  <?php foreach($query->result() as $row)
+                  {  
+                    ?>
 
-              <td ><input type="text" name="amount" class="form-control price" pattern="^[1-9][0-9]*$" id="price" placeholder="price" required=""></td>
-              <td id="prev"><input type="text" readonly="" class="form-control" placeholder="please first select customer"></td>
-              <td ><input type="text"  class="form-control new_bln" value="" id="t_bln"></td>
-              <td>  <textarea name="description" class="form-control" placeholder="Description..." id="" cols="30" rows="4"></textarea></td>
+                    <option value="<?php echo $row->id ?>"><?php echo $row->product_name; ?></option>
+                  <?php } ?>
+                </select></td>
+
+              <td><input type="text" name="qty[]" class="form-control qty" placeholder="quantity"></td>
             </tr>
 
           </tbody>
@@ -153,9 +152,30 @@
 
               <div class="box-footer">
           <!-- /.col -->
-       
-          </form>
+          <div class="row">
+            <div class="col-sm-3 pull-right">
+          <button type="button" class="btn btn-primary pull-right" id="click"><i class="fa fa-plus"></i></button>
+          <p class="lead">Amount Due <?php echo date("D/M/Y") ?></p>
+
+          <div class="table-responsive">
+
+            <table class="table">
+              <tr>
+                <th style="width:50%">Subtotal:</th>
+                <td><input type="text" readonly="" name="total" value="" class="form-control input-sm total"></td>
+              </tr>
+             
+            </table>
+             </div> 
+              </div>
+              <div class="col-sm-3 col-sm-offset-5">
+                <textarea name="description" id="" cols="30" rows="5" class="form-control" placeholder="description...."></textarea>
+              </div>  
+            </form>
+         
+         
           </div>
+        </div>
       <!-- Default box -->
     </section>
         </div>
@@ -176,80 +196,6 @@
 </div>
 <!-- ./wrapper -->
   <?php include('include/foot.php'); ?>
-  <script>
-   
-  </script>
-  <script>
-    
-    $(function(){
-         $('#customer').on("change",function(){
-                 var customer_name=$('#customer').val();
-                 if(customer_name !='')
-                 {
-                     $.ajax({
-                           url:"<?php echo base_url('customer/fetch_customer'); ?>",
-                           method:"POST",
-                           data:{customer_name:customer_name},
-                           success:function(data)
-                           {
-                             $('#shop').html(data);
-                           }  
-                     });
-                 }
-         });  
-    });
-
-    $(function(){
-         $('#customer').on("change",function(){
-                 var customer_name=$('#customer').val();
-                 if(customer_name !='')
-                 {
-                     $.ajax({
-                           url:"<?php echo base_url('customer/fetch_customer_prev'); ?>",
-                           method:"POST",
-                           data:{customer_name:customer_name},
-                           success:function(data)
-                           {
-                             $('#prev').html(data);
-                           }  
-                     });
-                 }
-         });  
-    });
-
-    // $(function(){
-    //      $('#customer').on("change",function(){
-    //              var customer_name=$('#customer').val();
-    //              if(customer_name !='')
-    //              {
-    //                  $.ajax({
-    //                        url:"<?php //echo base_url('customer/ret_pay'); ?>",
-    //                        method:"POST",
-    //                        data:{customer_name:customer_name},
-    //                        success:function(data)
-    //                        {
-
-    //                          $('#ret_pay').html(data);
-    //                          var sal_bln=$('.sal_bln').val();
-    //                         var o_bln=$('.prev_bln').val();
-    //                           var sum=Number(sal_bln)+Number(o_bln);
-    //                           $('#t_bln').val(sum);
-    //                        }  
-    //                  });
-    //              }
-    //      });  
-    // });
-
-    $('#inv_detail').delegate('.price','keyup',function(){
-        var tr=$(this).parent().parent();
-        var price=tr.find('.price').val()-0;
-        var prev_balance=tr.find('.prev_bln').val()-0;
-        var amt=prev_balance-price;
-        tr.find('.new_bln').val(amt);
-      }); 
-    
-  </script>
-
 <script>
   $(document).ready(function () {
     $('.sidebar-menu').tree()
@@ -258,6 +204,66 @@
       autoclose: true
     })
 </script>
+<script>
+      $(document).ready(function(){
+      var n=1;
 
+  
+    $(document).on('click','#click',function(){
+            add_new_row();
+
+    });
+    $(document).on('click', '#remove', function () {
+         $(this).closest('tr').remove();
+        //return false;
+        // alert();
+        n=n-1;
+        total();
+      });
+      
+    
+
+     $('#inv_detail').delegate('.qty','keyup',function(){
+        var tr=$(this).parent().parent();
+        var qty=tr.find('.qty').val()-0;
+        var amt=qty;
+        total();
+      }); 
+    
+     function total()
+    {
+      var gg=0;
+      $('.qty').each(function(i,element){
+          var qty=$(this).val()-0;
+          gg +=qty;
+
+      });
+    $('.total').val(gg);
+
+    }
+
+    function add_new_row()
+    {
+
+      
+       n=n+1;
+      var row='<tr id="row_id_'+n+'">'+
+              '<th><b class="no">'+n+'</b></th>'+
+               '<td><select name="p_name[]" id="" class="form-control">'+
+                  '<option value="" disabled="" selected="">Select Item</option>'+
+                  '<?php foreach($query->result() as $row) {   ?>'+
+
+                    '<option value="<?php echo $row->id?>"><?php echo $row->product_name; ?></option>'+
+                  '<?php } ?>'+
+                '</select></td>'+
+
+              '<td><input type="text" name="qty[]" class="form-control qty" placeholder="quantity"></td>'+
+
+              '<td><td><span class="btn btn-danger" type="button" id="remove"><i class="fa fa-remove"></></span></td></td>'+
+              '</tr>';
+              $('#inv_detail').append(row);
+    }
+});
+  </script>
 </body>
 </html>

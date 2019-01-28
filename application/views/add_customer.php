@@ -139,13 +139,6 @@
                   </div>
                 </div>
 
-				<div class="form-group">
-                  <label for="inputPassword3" class="col-sm-3 control-label">Customer Opening Quantity</label>
-
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control" id="inputPassword3" name="opening_quantity" placeholder="Customer Opening Quantity">
-                  </div>
-                </div>
 
                <div class="form-group">
                 <label for="inputPassword3" class="col-sm-3 control-label">Region</label>
@@ -161,16 +154,32 @@
                
               </div>
         <!-- /.box-body -->
-		<div class="box-footer">
+		        <div class="box-footer">
                 <a href="<?php echo base_url() ?>login/dashboard" class="btn btn-default">Cancel</a>
                 <button type="submit" class="btn btn-info pull-right col-sm-4">Add Customer</button>
               </div>
               <!-- /.box-footer -->
-            </form>
+            
           </div>
 
         
       </div>
+         <div class="col-md-6">
+      
+          <div class="row">
+            <?php foreach($item->result() as $row_item){ ?>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for=""><?php echo $row_item->product_name ?></label>
+                <input type="text" name="qty[]" class="form-control">
+                <input type="hidden" name="item_id[]" value="<?php echo $row_item->id ?>">
+              </div>
+            </div>
+          <?php } ?>
+          </div>
+       
+      </div>
+       </form>
       <!-- /.box -->
         <div class="box-footer">
             <div class="row">
@@ -183,7 +192,6 @@
                   <th>Customer Shop Name</th>
                   <th>Customer Mobile No</th>
                   <th>Customer Opening Balance</th>
-                  <th>Customer Opening Quantity</th>
                   <th>Region</th>
                   <th>Edit</th>
                   <th>Delete</th>
@@ -202,7 +210,6 @@
                   <td><?php echo $rows->shop_name ?> </td>
                   <td><?php echo $rows->mobile ?> </td>
                   <td><?php echo $rows->opening_balance ?> </td>
-                  <td><?php echo $rows->opening_quantity ?> </td>
                 
                   <td><?php echo $rows->region_name ?></td>
                  
