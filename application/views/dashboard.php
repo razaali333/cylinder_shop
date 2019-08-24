@@ -1,169 +1,229 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Dashboard</title>
-<?php include('include/head.php'); ?>
+<?php 
+include('include/head.php');
+?>
+<!-- <link rel="stylesheet" href="<?php echo base_url('css/chart/default.css') ?>"> -->
+		<body>
+			<style>
+				.chart-container{
+					width: 720px;
+					/*height: 300px;*/
+					margin-left: 25%;
+				}
+			</style>
+		<?php include('include/header.php') ?>
+		<div class="main-container container-fluid">
+			<a class="menu-toggler" id="menu-toggler" href="#">
+				<span class="menu-text"></span>
+			</a>
 
-  <!-- Google Font -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-</head>
-<body class="hold-transition skin-blue sidebar-mini">
-<!-- Site wrapper -->
-<div class="wrapper">
+			<?php include('include/sidebar.php'); ?>
 
-  		<!-- Header here -->
-		<?php include('include/header.php'); ?>
+			<div class="main-content">
 
-  <!-- =============================================== -->
-		<!-- sidebar here -->
-		<?php include('include/sidebar.php'); ?>
- 		
+				<div class="page-content">
+				<div class="row-fluid">
+					<div class="span12">
+						<div class="widget-box">
+							<div class="widget-header">
+								<h4>All OPD Informations</h4>
+							</div>
+							<div class="widget-body">
+								<div class="widget-main no-padding">
+								<div class="span5">
+									<label for="">Select Option:</label>
+									<select name="" id="">
+										<option value="">Daily</option>
+										<option value="">Weekly</option>
+										<option value="">Monthly</option>
+									</select>
+								</div>
 
-  <!-- =============================================== -->
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Dashboard
-        <small>it all starts here</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Dashboard</li>
-      </ol>
-    </section>
+									 <div class="chart-container">
+    							<canvas id="line-chartcanvas"></canvas>
+  								</div>
+									</div>
+								</div>
+							</div>
+                            
+                     <!--/.row-fluid-->
+				
+                
+                <div class="row-fluid"></div>
+                </div><!--/.page-content-->
 
-    <!-- Main content -->
-    <section class="content">
+				<!--/#ace-settings-container-->
+			</div><!--/.main-content-->
+		</div><!--/.main-container-->
 
-      <!-- Default box -->
-      <div class="box">
-        <div class="box-header with-border">
-          <h3 class="box-title">Title</h3>
+		<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-small btn-inverse">
+			<i class="icon-double-angle-up icon-only bigger-110"></i>
+		</a>
+		
+		<!--basic scripts-->
+		<?php include('include/foot.php') ?>
+        <script src="<?php echo base_url('css/chart/Chart.min.js') ?>"></script>
+        <!-- <script src="<?php// echo base_url('css/chart/line-db-php.js') ?>"></script> -->
+        <script>
+        	$(document).ready(function() {
+        		daily_opd();
+ 				function daily_opd()
+ 				{
+ 					$.ajax({
+    url : '<?php echo base_url('login/get_chart') ?>',
+    type : "GET",
+    dataType:'json',
+    success : function(data){
+      console.log(data);
+      console.log(data[0].no);
+      var score = {
+        FM_OPD : [],
+        SM_OPD : [],
+        FF_OPD :[]
+      };
+    
 
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
-                    title="Collapse">
-              <i class="fa fa-minus"></i></button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-              <i class="fa fa-times"></i></button>
-          </div>
-        </div>
-        <div class="box-body">
-          <div class="row">
-          	<div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-red">
-            <div class="inner">
-              <h3>0</h3>
-				<a href="<?php echo base_url() ?>user/index" style="color: white;">
-              <h2>Add Users</h2>
-          		</a>
-            </div>
-            <div class="icon">
-              <i class="fa fa-user-plus"></i>
-            </div>
-            <a href="#" class="small-box-footer">
-              More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
-          </div>
-        </div>
-          <!-- ./col -->
+       score.FM_OPD.push(data[0].no);
 
-          	<div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-aqua">
-            <div class="inner">
-              <h3>0</h3>
-				<a href="<?php echo base_url() ?>customer/index" style="color: white;">
-              <h2>Add Customer</h2>
-          		</a>	
-            </div>
-            <div class="icon">
-              <i class="fa fa-user"></i>
-            </div>
-            <a href="#" class="small-box-footer">
-              More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
-          </div>
-        </div>
-          <!-- ./col -->
+       score.SM_OPD.push(data[1].nom);
+       score.FF_OPD.push(data[2].nome);
+      
+      //get canvas
+      var ctx = $("#line-chartcanvas");
 
-          	<div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-green">
-            <div class="inner">
-              <h3>150</h3>
-			<a href="<?php echo base_url() ?>product/index" style="color: white;">
-              <h2>Add Cylinders</h2>
-          		</a>
-            </div>
-            <div class="icon">
-              <i class="fa fa-fire"></i>
-            </div>
-            <a href="#" class="small-box-footer">
-              More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
-          </div>
-        </div>
-          <!-- ./col -->
+      var data = {
+        labels :["First Male OPD","2nd Male OPD","1st Female OPD"],
+        datasets : [
+          {
+            label : "Today's OPD",
+            data : [score.FM_OPD,score.SM_OPD,score.FF_OPD],
+            backgroundColor :[
+                       "rgba(255,99,132,0.2)",
+                       "#E3EFFB",
+                       "#C6F5C5"
+                ],
+            borderColor : [
+                        "rgba(255,99,132,1)",
+                        "#155595",
+                        "#25BE21"
+                          ],
+            hoverBackgroundColor:[
+                           "rgba(255,99,132,0.4)",
+                           "#B0D2F4", 
+                           "#A5EFA3" 
+                                  ],
+            hoverBorderColor:[
+                            "rgba(255,99,132,1)",
+                            "#155595",
+                             "#25BE21"
+                              ],
+            fill : false,
+            borderWidth:2,
+            lineTension : 0,
+          },
+          // {
+          //   label : "2nd Male OPD",
+          //   data : score.SM_OPD,
+          //   backgroundColor : "green",
+          //   borderColor : "lightgreen",
+          //   fill : false,
+          //   lineTension : 0,
+          //   pointRadius : 20
+          // }
+        ]
+      };
 
-          	<div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-yellow">
-            <div class="inner">
-              <h3>150</h3>
-			<a href="#" style="color: white;">
-              <h2>Add Vendors</h2>
-          		</a>	
-            </div>
-            <div class="icon">
-             <i class="fa fa-users"></i>
-            </div>
-            <a href="#" class="small-box-footer">
-              More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
-          </div>
-        </div>
-          <!-- ./col -->
-        </div>
-        <!-- row end here -->
-        <!-- /.box-body -->
-        <div class="box-footer">
-          Footer
-        </div>
-        <!-- /.box-footer-->
-      </div>
-      <!-- /.box -->
+      var options = {
+        title : {
+          display : true,
+          position : "top",
+          text : "Graphically Representing Daily OPD",
+          fontSize : 18,
+          fontColor : "#111"
+        },
+        legend : {
+          display : true,
+          position : "bottom"
+        },
+        scales:{
+          yAxes:[{
+            stacked:true,
+            gridLines:{
+              display:true,
+              color:"rgba(255,99,132,2)"
+            }
+          }]
+        }
+      };
 
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
+      var chart = new Chart( ctx, {
+        type : "bar",
+        data : data,
+        options : options
+      } );
 
-  <footer class="main-footer">
-    <div class="pull-right hidden-xs">
-      <b>Version</b> 2.4.0
-    </div>
-    <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-    reserved.
-  </footer>
+    },
+    error : function(data) {
+      console.log(data);
+    }
+  });
+ 				}
+				});
+        </script>
+<script type="text/javascript">
 
- <!-- /.control-sidebar -->
-  <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
-  <div class="control-sidebar-bg"></div>
-</div>
-<!-- ./wrapper -->
-	<?php include('include/foot.php'); ?>
-<script>
-  $(document).ready(function () {
-    $('.sidebar-menu').tree()
-  })
+
+$('[data-rel=tooltip]').tooltip();
+$(".chzn-select").chosen();
+$(function() {
+	$(document).ready(function(){
+  $('#save').dblclick(function(e){
+    e.preventDefault();
+  });
+  $('#saveandprint').dblclick(function(e){
+    e.preventDefault();
+  });
+});
+
+	
+				var oTable1 = $('#sample-table-2').dataTable( {
+				"aoColumns": [
+			      { "bSortable": false },
+			      null, null,null, null,
+				  { "bSortable": false }
+				] } );
+				
+				
+				$('table th input:checkbox').on('click' , function(){
+					var that = this;
+					$(this).closest('table').find('tr > td:first-child input:checkbox')
+					.each(function(){
+						this.checked = that.checked;
+						$(this).closest('tr').toggleClass('selected');
+					});
+						
+				});
+			
+				$('[data-rel="tooltip"]').tooltip({placement: tooltip_placement});
+				function tooltip_placement(context, source) {
+					var $source = $(source);
+					var $parent = $source.closest('table')
+					var off1 = $parent.offset();
+					var w1 = $parent.width();
+			
+					var off2 = $source.offset();
+					var w2 = $source.width();
+			
+					if( parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2) ) return 'right';
+					return 'left';
+				}
+			});
+
+
+		
+		
+
 </script>
-</body>
+		<!--inline scripts related to this page-->
+	</body>
 </html>

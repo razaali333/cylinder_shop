@@ -20,15 +20,16 @@ class User extends CI_Controller {
 	 */
 	public function index()
 	{
-		$this->load->model('mdl_user');
-		$data['query']=$this->mdl_user->get_user();
+		$this->load->model('mdl_register');
+		$data['query']=$this->mdl_register->get_user();
 		$this->load->view('add_user',$data);
 	}
 
 	public function register()
 	{
-		$user=array('name' => $this->input->post('username'), 
-                  'password' => $this->input->post('password')
+		$user=array('user_name' => $this->input->post('username'), 
+                  	'password' => $this->input->post('password'),
+                  	'type' => $this->input->post('type')
                   );
 
 		$this->load->library('form_validation');
@@ -38,7 +39,7 @@ class User extends CI_Controller {
 			$this->index();
 		} else {
 			$this->load->model('mdl_register');
-			if(count($this->mdl_register->checkData($user['username'])) > 0)
+			if(count($this->mdl_register->checkData($user['user_name'])) > 0)
 			{
 					$this->session->set_flashdata('error','Username already exists');
 					 redirect('user/index');

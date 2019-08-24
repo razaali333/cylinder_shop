@@ -3,333 +3,154 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Product extends CI_Controller {
 
-	/**
-	 * Index Page for this controller.
-	 *
-	 * Maps to the following URL
-	 * 		http://example.com/index.php/welcome
-	 *	- or -
-	 * 		http://example.com/index.php/welcome/index
-	 *	- or -
-	 * Since this controller is set as the default controller in
-	 * config/routes.php, it's displayed at http://example.com/
-	 *
-	 * So any other public methods not prefixed with an underscore will
-	 * map to /index.php/welcome/<method_name>
-	 * @see https://codeigniter.com/user_guide/general/urls.html
-	 */
 	public function index()
 	{
-		$this->load->model('mdl_agency');
-		$this->load->model('mdl_product');
 
-		$data['query']=$this->mdl_agency->get_agency();
-		$data['item']=$this->mdl_product->get_items_with_cat();
-		// $data['agency_by_id']=$this->mdl_agency->get_cat_by_id();
-		$this->load->view('product',$data);
-	}
-
-
-	public function insert()
-	{
-		$data=array(
-
-				'product_name'=>	ucfirst($this->input->post('name')),
-				'qty'=>	ucfirst($this->input->post('quantity')),
-				'agency_id'=>	ucfirst($this->input->post('agency'))
-			);
-
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('name', 'Cylinder Name', 'trim|required');
-		if ($this->form_validation->run() == FALSE) {
-			$this->index();
-		} else {
-			$this->load->model('mdl_product');
-			if(count($this->mdl_product->checkData($data['product_name'])) > 0)
-			{
-					$this->session->set_flashdata('error','Cylinder  already exists');
-					 redirect('product/index');
-			}
-			else{
-
-
-			$query=$this->mdl_product->insert($data);
-				if($query)
-				{
-					 $this->session->set_flashdata('success','Cylinder  Added sucessfuly');
-					 redirect('product/index');
-				}
-				else{
-					$this->session->set_flashdata('error','Some thing went wrong');
-				}
-			}
-			
-		}
-	}
-
-	public function invoice()
-	{
-		$this->load->model('mdl_product');
-		$this->load->model('mdl_agency');
-		$data['query']=$this->mdl_product->get_item();
-		$data['agency']=$this->mdl_agency->get_agency();
-		$data['invno']=$this->mdl_product->get_invno();
-
-
-		$this->load->view('invoice',$data);
-	}
-
-	public function insert_invoice()
-	{
-		$this->load->library('form_validation');
-		$form_data = array();
-
-
-
-		$inv_data=array(
-				'inv_no'=>	$this->input->post('invno'),
-				'agency_id'=>	$this->input->post('agency'),
-				'date'=>	$this->input->post('date'),
-				'inv_subtotal'=>	$this->input->post('total'),
-				'description'=>		$this->input->post('description')
-		);
-
-		$form_data['item_id'] =	$this->input->post('p_name');
-		$form_data['qty'] =	$this->input->post('qty');
-		$form_data['price'] =	$this->input->post('price');
-		$form_data['item_subtotal'] =	$this->input->post('subtotal');
 		
-		// print_r($form_data['item_id']);exit();
+		 
+		// $this->load->model('mdl_invoice');
+		 $this->load->model('mdl_product');
+				
+		 $data['category']=$this->mdl_product->get_category();
+		 $data['sub_category']=$this->mdl_product->get_sub_category();
+		
 
+
+		$this->load->view('add_category',$data);
+	}
+
+	public function add_category()
+	{	
 		$this->load->model('mdl_product');
-			
-		$query=$this->mdl_product->insert_inv($inv_data,$form_data);
-			if($query)
-				{
-					 $this->session->set_flashdata('success','Invoice  Added sucessfuly');
-					 redirect('product/invoice');
-				}
-				else{
-					$this->session->set_flashdata('error','Some thing went wrong');
-				}
-			
-		}
-
-
-		public function edit_item($id)
-		{
-			$this->load->model('mdl_product');
-			$this->load->model('mdl_agency');
-			$data['agency']=$this->mdl_agency->get_agency();
-			$data['query']=$this->mdl_product->fetch_product($id);
-
-			$this->load->view('edit_product',$data);
-		}
-
-		public function edit_item_form($id)
-		{
-			$this->load->model('mdl_product');
-			$this->load->library('form_validation');
-		$data['product_name']=ucfirst($this->input->post('edit_product'));
-		$data['qty']=ucfirst($this->input->post('edit_qty'));
-		$data['agency_id']=ucfirst($this->input->post('agency'));
-
-		$this->form_validation->set_rules('edit_product', 'Cylinder', 'trim|required');
-		if ($this->form_validation->run() == FALSE) {
-			$this->edit_product($id);
-		} else {
-			$query=$this->mdl_product->edit_item($id,$data);
-			if($query)
-			{
-				$this->session->set_flashdata('success', 'Cylinder Edit Successfuly');
-				redirect('product/index');
-			}
-			else{
-				$this->session->set_flashdata('error', 'Error');
-				$this->edit_product($id);
-			}
-		}
-		}
-
-		public function all_invoice()
-		{
-
-			$this->load->model('mdl_product');
-			$data['query']=$this->mdl_product->get_invoice();
-			$this->load->view('all_invoice_record',$data);
-		}
-
-
-		public function delete_item($id)
-		{
-			$this->load->model('mdl_product');
-		$query=$this->mdl_product->delete_product($id);
+		$category['cat_name']=ucfirst($this->input->post('category'));
+		// $data['category']=$this->mdl_product->get_category();
+		$query=$this->mdl_product->insert_category($category);
 		if($query)
 		{
-			$this->session->set_flashdata('success', 'Deleted Succesfully');
-			redirect('product/index');
+			$this->session->set_flashdata('success','Category Successfully Added');
+					 redirect('product/index');
 		}
-		else{
-			$this->session->set_flashdata('error', 'Error');
-			redirect('product/index');
-		}
+	}
 
 
-		}
+	public function fetch_cat_by_id()
+	{
+		$this->load->model('mdl_product');
+		$id=$this->input->post('id');
+		// echo $id;exit();
+		$this->mdl_product->fetch_cat_by_id($id);
+	}
+	public function edit_category()
+	{
 
+	}
 
-		public function edit_invoice($id)
+	public function delete_category()
+	{
+		$this->load->model('mdl_product');
+		$id=$this->input->post('id');
+		$this->mdl_product->delete_category($id);
+	}
+
+	public function add_sub_category()
+	{
+		$this->load->model('mdl_product');
+		$data = array('sub_cat_name' => $this->input->post('subcat'),
+					  'cat_id' => $this->input->post('category'),	
+					  'price' => $this->input->post('price')	
+		 );
+		// $data['category']=$this->mdl_product->get_category();
+		$query=$this->mdl_product->insert_sub_category($data);
+		if($query)
 		{
-			$this->load->model('mdl_product');
-			$this->load->model('mdl_agency');
-			$data['agency']=$this->mdl_agency->get_agency();
-			$data['item']=$this->mdl_product->get_item();
-			$data['query']=$this->mdl_product->fetch_invoice($id);
-			
-			$rows=$data['query']->row_array();
-			$data['date']=$rows['date'];
-			$data['inv_no']=$rows['inv_no'];
-			$data['inv_id']=$rows['agency_id'];
-			$data['id']=$rows['id'];
-			$data['description']=$rows['description'];
-			$this->load->view('edit_invoice',$data);
+			$this->session->set_flashdata('success',' Sub Category Successfully Added');
+					 redirect('product/index');
 		}
+	}
 
-		public function update_invoice($id)
-		{
-			$this->load->model('mdl_product');
-		$inv_data['inv_no']=$this->input->post('invno');
-		$inv_data['agency_id']=$this->input->post('agency');
-		$inv_data['date']=$this->input->post('date');
-		$inv_data['inv_subtotal']=$this->input->post('total');
-		$inv_data['description']=$this->input->post('description');
-		
-		$form_data['item_id'] =	$this->input->post('p_name');
-		$form_data['qty'] =	$this->input->post('qty');
-		$form_data['price'] =	$this->input->post('price');
-		$form_data['item_subtotal'] =	$this->input->post('subtotal');
+	public function test()
+	{
+		$this->load->model('mdl_product');
+		$data['category']=$this->mdl_product->get_category();
+
+		$data['all_test']=$this->mdl_product->get_all_test();
+		$this->load->view('test',$data);
+	}
+
+	public function get_sub_cat()
+	{	
+		 $this->load->model('mdl_product');
+		$id=$this->input->post('id');
+		$this->mdl_product->get_sub_cat_by_id($id);
+
+	}
 	
-			
-		$query=$this->mdl_product->update_inv($id,$inv_data,$form_data);
 
-			if($query)
-				{
-					 $this->session->set_flashdata('success','Invoice  Edit sucessfuly');
-					 redirect('product/all_invoice');
-				}
-				else{
-					$this->session->set_flashdata('error','Some thing went wrong');
-				}
-		}
+	public function add_test()
+	{
+		$this->load->model('mdl_product');
 
-		public function delete_invoice($id)
-		{
-			$this->load->model('mdl_product');
-		$query=$this->mdl_product->delete_invoice($id);
+		$data = array('test_name' =>$this->input->post('name') ,
+					  'test_cat_id' =>$this->input->post('category') ,
+					  'unit' =>$this->input->post('unit') , 	
+					  'ref_value' =>$this->input->post('refrence') ,
+					  'result' =>$this->input->post('result') ,
+					  'test_sub_cat_id' =>$this->input->post('sub_category') ,
+						 );
+
+		$query=$this->mdl_product->add_test($data);
 		if($query)
 		{
-			$this->session->set_flashdata('success', 'Deleted Succesfully');
-			redirect('product/all_invoice');
+			$this->session->set_flashdata('success',' Test Successfully Added');
+					 redirect('product/test');
 		}
-		else{
-			$this->session->set_flashdata('error', 'Error');
-			redirect('product/all_invoice');
-		}
+	}
 
+	public function delete_record_by_id()
+	{
+		$this->load->model('mdl_product');
+		$id=$this->input->post('id');
 
-		}
+		$this->mdl_product->delete_record_by_id($id);
+	}
 
-		public function opening_qty()
-		{
-			$this->load->model('mdl_product');
-			$this->load->model('mdl_customer');
-			$data['customer']=$this->mdl_customer->get_customer();
-			$data['inv_no']=$this->mdl_product->get_open_qty_invno();
-			$data['item']=$this->mdl_product->get_item();
-			$this->load->view('opening_qty',$data);
-		}
-
-		public function insert_opening_qty()
-		{
-			$this->load->model('mdl_product');
-
-		$form_data['customer_id']=$this->input->post('customer');
-		$form_data['item_id']=$this->input->post('p_name');
-		$form_data['qty']=$this->input->post('qty');
-		$form_data['invoice_no']=$this->input->post('invno');
-		$form_data['date']=$this->input->post('date');
-
-			$query=$this->mdl_product->insert_opn_qty($form_data);
-
-			if($query)
-			{
-				$this->session->set_flashdata('success', 'Opening Customer Cylinder Quantity Succesfully');
-			redirect('product/opening_qty');
-			}
-		}
-
-		// public function all_opening_qty()
-		// {
-		// 	$this->load->model('mdl_product');
-		// 	$data['customer']=$this->mdl_product->all_open_qty_rec();
-		// 	// $data['inv_no']=$this->mdl_product->get_open_qty_invno();
-		// 	$this->load->view('all_opening_qty',$data);
-		// }
-
-		public function edit_open_qty($id)
-		{
-			$this->load->model('mdl_product');
-			$this->load->model('mdl_agency');
-			$this->load->model('mdl_customer');
-			$data['customer']=$this->mdl_customer->get_customer();
-			$data['item']=$this->mdl_product->get_item();
-			 $data['query']=$this->mdl_product->fetch_open_qty_inv($id);
-			
-			$rows=$data['query']->row_array();
-			$data['date']=$rows['date'];
-			$data['inv_no']=$rows['invoice_no'];
-			$data['customer_id']=$rows['customer_id'];
-			// $data['inv_id']=$rows['agency_id'];
-			 $data['id']=$id;
-			// $data['description']=$rows['description'];
-			$this->load->view('edit_open_qty',$data);
-		}
-
-		public function update_opening_qty($id)
-		{
-			$form_data['customer_id'] =	$this->input->post('customer');
-			$form_data['invoice_no'] =	$this->input->post('invoice_no');
-			$form_data['item_id'] =	$this->input->post('p_name');
-			$form_data['qty'] =	$this->input->post('qty');
-			$form_data['date'] =	$this->input->post('date');
-			$this->load->model('mdl_product');
-		
-		$query=$this->mdl_product->update_open_qty($form_data,$id);
-		if($query)
-		{
-			 $this->session->set_flashdata('success','Opening Cylinder Qunatity  sucessfuly Updated');
-			 redirect('product/all_opening_qty');
-		}
-		else{
-			$this->session->set_flashdata('error','Some thing went wrong');
-			}
-		}
-
-		public function delete_opening_qty($id)
-		{
-			$this->load->model('mdl_product');
-		$query=$this->mdl_product->delete_open_qty($id);
-		if($query)
-		{
-			$this->session->set_flashdata('success', 'Deleted Succesfully');
-			redirect('product/all_opening_qty');
-		}
-		else{
-			$this->session->set_flashdata('error', 'Error');
-			redirect('product/all_opening_qty');
-		}
-		}
-
+	public function print_record_by_id()
+	{
+		$this->load->model('mdl_product');
+		$id=$this->input->post('id');
+		$query=$this->mdl_product->get_invoice_print_by_id($id);
+		$row=$query->row_array();
+		$name=$row['patient_name'];
+		$no=$row['receptNumber'];
+		$age=$row['age'];
+		$address=$row['address'];
+		$gander=$row['gander'];
+		$type=$row['type'];
+		$date=$row['date'];
+		$time=$row['time'];
+		$this->session->set_userdata('name',$name);
+		$this->session->set_userdata('receptNumber',$no);
+		$this->session->set_userdata('age',$age);
+		$this->session->set_userdata('address',$address);
+		$this->session->set_userdata('gander',$gander);
+		$this->session->set_userdata('type',$type);
+		$this->session->set_userdata('date',$date);
+		$this->session->set_userdata('time',$time);
 		
 		
+	}
+
+	public function all_print_opd()
+	{
+			$this->load->model('mdl_product');
+			$data['name']=$this->session->userdata('name');
+			$data['receptNumber']=$this->session->userdata('receptNumber');
+			$data['age']=$this->session->userdata('age');
+			$data['address']=$this->session->userdata('address');
+			$data['gander']=$this->session->userdata('gander');
+			$data['type']=$this->session->userdata('type');
+			$data['date']=$this->session->userdata('date');
+			$data['time']=$this->session->userdata('time');
+		$this->load->view('all_opd_print',$data);
+	}
 }

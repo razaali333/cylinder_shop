@@ -1,134 +1,247 @@
+
 <?php 
 	class Mdl_report extends CI_Model
-	{
+  {
+  	public function get_date_filter_record($search,$from,$to,$type,$recept,$p_name,$address,$gendar,$shift)
+  	{
+  		// echo $from.$type;exit();
+  		$sql="";
+  		if(isset($search))
+  		{
+  			if($from!='' AND $type!='' AND $to !=''AND $recept !='' AND $p_name!='' AND $gendar!='' AND $address!='' AND $shift!='')
+  			{
+  			$sql="type='$type' AND date>='$from' AND date<='$to' AND receptNumber='$recept' AND patient_name='$p_name' AND gander='$gendar' AND address='$address' AND shift='$shift'";	
+  			}
 
-		public function ret_payment()
-		{
-			$date = date('Y/m/d');
-			$exe="SELECT return_payment.*,customer.name,customer.shop_name,customer.mobile FROM return_payment LEFT JOIN customer ON (return_payment.customer_id=customer.id)  WHERE return_payment.date = '$date'";
-			$query=$this->db->query($exe);
-				return $query;
-		}
-
-		public function filter_payment($from_date,$to_date)
-		{
-			if(isset($from_date) && isset($to_date)){
-
-				if(!empty($from_date) && empty($to_date))
-				{
-				$data = "return_payment.date = '$from_date'";	
-				}
-				elseif (empty($from_date) && !empty($to_date)) {
-				$data = "return_payment.date = '$to_date'";	
-				}
-				elseif (!empty($from_date) && !empty($to_date)) {
-				$data = "return_payment.date >= '$from_date' AND return_payment.date < '$to_date' + INTERVAL 1 DAY";	
-				}
-				else{
-				$data = "return_payment.date =".date('Y/m/d');	
-				}
-			}
-			  $exe="SELECT return_payment.*,customer.name,customer.shop_name,customer.mobile FROM return_payment LEFT JOIN customer ON (return_payment.customer_id=customer.id) WHERE ".$data;
-			$query=$this->db->query($exe);
-			return $query;
-		}
+        elseif($from!='' AND  $recept !='' AND $to == ''  AND  $type=='' AND $p_name=='' AND $gendar=='' AND $address=='' AND $shift!='')
+        {
+          $sql="date='$from' AND receptNumber='$recept' ";
+        }
 
 
-		public function ret_cylinder_report($from_date,$to_date,$cylinder)
-		{
-			
-			if(isset($from_date) && isset($to_date) && isset($cylinder)){
+          elseif($from !='' AND $type !='' AND $to!='' AND $p_name=='' AND $recept=='' AND $gendar=='' AND $address=='' AND $shift=='')
+        {
+          $sql="type='$type' AND date>='$from' AND date<='$to'";
+        }
 
-				
-				if(!empty($from_date) && empty($to_date))
-				{
-				$data = " return_cylinder.p_id=$cylinder AND return_cylinder.date = '$from_date'";	
-				}
-				elseif(!empty($cylinder) && $cylinder="all")
-				{
-					$data = " return_cylinder.date ='".date('Y/m/d')."'";
-				}
-				elseif (empty($from_date) && !empty($to_date))
-				{
-				$data = " return_cylinder.p_id=$cylinder AND return_cylinder.date = '$to_date'";	
-				}
-				elseif (!empty($from_date) && !empty($to_date))
-				 {
-				$data = " return_cylinder.p_id=$cylinder AND return_cylinder.date >= '$from_date' AND return_cylinder.date < '$to_date' + INTERVAL 1 DAY";	
-				}
-				else{
-				$data = "return_cylinder.date ='".date('Y/m/d')."'";	
-				}
-			}
-			 $exe="SELECT return_cylinder.*,product.product_name,product.id,customer.name FROM return_cylinder LEFT JOIN product ON (return_cylinder.p_id=product.id) LEFT JOIN customer ON(return_cylinder.customer_id=customer.id) WHERE ".$data; 
-			$query=$this->db->query($exe);
-			return $query;	
-		}
+  			elseif($from !='' AND $type !='' AND $to=='' AND $p_name=='' AND $recept=='' AND $gendar=='' AND $address=='' AND $shift=='')
+        {
+  				$sql="type='$type' AND date='$from'";
+  			}
+  			elseif($to!='' AND $type!='' AND $from=='' AND $p_name=='' AND $recept=='' AND $gendar=='' AND $address=='' AND $shift=='')
+  			{
+  				$sql="type='$type' AND date='$from'";	
+  			}
+  			elseif($to=='' AND $from=='' AND $type!='' AND $p_name=='' AND $recept=='' AND $gendar=='' AND $address=='' AND $shift=='')
+  			{
+  				$date=date('Y-m-d');
+  			 $sql="type='$type' AND date='$date'";	
+  			}
+  			elseif($from!='' AND $to=='' AND $type=='' AND $p_name=='' AND $recept=='' AND  $gendar=='' AND $address=='' AND $shift=='')
+  			{
+  				$sql="type!='' AND date='$from'";
+  			}
+  			elseif($from=='' AND $to!='' AND $type=='' AND $p_name=='' AND $recept=='' AND $gendar=='' AND $address=='' AND $shift=='')
+  			{
+  				$sql="type!='' AND date='$to'";
+  			}
+        elseif($recept!='' AND $to=='' AND $type=='' AND $p_name=='' AND $from=='' AND $gendar=='' AND $address=='' AND $shift=='')
+        {
+            $sql="receptNumber='$recept'";
+        }
 
-		public function daily_sale_report($from_date,$to_date,$customer)
-		{
-			if(isset($from_date) && isset($to_date) && isset($customer)){
+        elseif($from!='' AND $gendar!='' AND $recept=='' AND $to=='' AND $type=='' AND $p_name=='' AND  $address=='' AND $shift=='')
+        {
+            $sql="date='$from' AND gander='$gendar'";
+        }
 
-				if(!empty($from_date) && empty($to_date))
-				{
-				$data = " sale_invoice.customer_id=$customer AND sale_invoice.date = '$from_date'";	
-				}
-				elseif (empty($from_date) && !empty($to_date)) {
-				$data = " sale_invoice.customer_id=$customer AND sale_invoice.date >= '$from_date'";	
-				}
-				elseif (!empty($from_date) && !empty($to_date)) {
-				$data = " sale_invoice.customer_id=$customer AND sale_invoice.date >= '$from_date' AND sale_invoice.date <= '$to_date'";	
-				}
-				else{
-				$data = "sale_invoice.date =".date('Y/m/d');	
-				}
-			}
-			 $exe="SELECT sale_invoice.*,sale_invoice_detail.invoice_id,sale_invoice_detail.customer_id,sale_invoice_detail.item_id,sale_invoice_detail.qty,sale_invoice_detail.price,sale_invoice_detail.item_total,customer.name,product.product_name FROM sale_invoice LEFT JOIN sale_invoice_detail ON (sale_invoice.id=sale_invoice_detail.invoice_id) LEFT JOIN customer ON (sale_invoice.customer_id=customer.id) LEFT JOIN product ON (sale_invoice_detail.item_id=product.id) WHERE ".$data;
-			$query=$this->db->query($exe);
-			return $query;	
-		}
+          elseif($gendar!='' AND $from=='' AND $recept=='' AND $to=='' AND $type=='' AND $p_name=='' AND  $address=='' AND $shift=='')
+        {
+          $date=date('Y-m-d');
+            $sql="date='$date' AND gander='$gendar'";
+        }
 
-		public function fetch_stock_item_qty($item_id)
-		{
-			$exe="SELECT SUM(qty) AS p_qty FROM stock_inv_details WHERE item_id='$item_id'";
-			$query=$this->db->query($exe);
-			return $query;	
-		}
+         elseif($p_name!='' AND $from=='' AND $recept=='' AND $to=='' AND $type=='' AND $gendar=='' AND  $address=='' AND $shift=='')
+        {
+        
+            $sql="patient_name='$p_name'";
+        }
+           elseif($from!='' AND $to!='' AND $shift!='' AND $recept=='' AND $type=='' AND $gendar=='' AND  $address=='' AND $p_name=='')
+        {
+        
+            $sql="date>='$from' AND date<='$to' shift='$shift'";
+        }
+          elseif($from!='' AND $shift!='' AND $recept=='' AND $from=='' AND $type=='' AND $gendar=='' AND  $address=='' AND $p_name=='')
+        {
+        
+            $sql="date='$from' AND shift='$shift'";
+        }
 
-		public function fetch_sale_item_qty($item_id)
-		{
-			$exe="SELECT SUM(qty) AS s_qty FROM sale_invoice_detail WHERE item_id='$item_id'";
-			$run=$this->db->query($exe);
-			return $run;	
-		}
-
-		public function fetch_retun_item_qty($item_id)
-		{
-			$exe="SELECT SUM(qty) AS r_qty FROM `return_cylinder` WHERE p_id='$item_id'";
-			$r_qty=$this->db->query($exe);
-			return $r_qty;	
-		}
-
-		public function fetch_open_item_qty($item_id)
-		{
-			$exe="SELECT SUM(qty) AS o_qty FROM opening_qty  WHERE item_id='$item_id'";
-			$o_qty=$this->db->query($exe);
-			return $o_qty;	
-		}
+          elseif($type!='' AND $shift!='' AND $from!='' AND $to!='' AND $recept=='' AND $gendar=='' AND  $address=='' AND $p_name=='')
+        {
+            
+            $sql="date>='$from' AND date<='$to' AND type='$type' AND shift='$shift' ";
+        }
 
 
-		public function get_item_purchase($date)
-		{
-			 $exe="SELECT stock_invoice.*,stock_inv_details.inv_id,stock_inv_details.item_id,SUM(stock_inv_details.qty) AS p_qty,product.product_name,product.id As p_id FROM stock_invoice LEFT JOIN stock_inv_details ON (stock_invoice.inv_no=stock_inv_details.inv_id) LEFT JOIN product ON (stock_inv_details.item_id=product.id) WHERE stock_invoice.date='$date' GROUP BY stock_inv_details.item_id";
-			$query=$this->db->query($exe);
-			return $query;	
-		}
 
-		public function fetch_sal_qty_by_item($item_id, $date)
-		{
-			$exe="SELECT sale_invoice.*,SUM(sale_invoice_detail.qty) AS s_qty FROM sale_invoice LEFT JOIN sale_invoice_detail ON (sale_invoice.id=sale_invoice_detail.invoice_id) WHERE  sale_invoice.date='$date' AND sale_invoice_detail.item_id='$item_id'";
+            elseif($type!='' AND $shift!='' AND $from=='' AND $recept=='' AND $to=='' AND $gendar=='' AND  $address=='' AND $p_name=='')
+        {
+            $date=date('Y-m-d');
+            $sql="date='$date' AND type='$type' AND shift='$shift' ";
+        }
+             elseif($shift!='' AND $type=='' AND $from=='' AND $recept=='' AND $to=='' AND $gendar=='' AND  $address=='' AND $p_name=='')
+        {
+            $date=date('Y-m-d');
+            $sql="date='$date' AND shift='$shift' ";
+        }
 
-			$query=$this->db->query($exe);
-			return $query;	
-		}
-	}
+         elseif($shift!='' AND $gendar!='' AND $from!='' AND $recept=='' AND $to=='' AND $type=='' AND  $address=='' AND $p_name=='')
+        {
+            
+            $sql="date='$from' AND shift='$shift' AND gander='$gander'";
+        }
+
+         elseif($shift!='' AND $gendar!='' AND $from=='' AND $recept=='' AND $to=='' AND $type=='' AND  $address=='' AND $p_name=='')
+        {
+           $date=date('Y-m-d');
+            
+            $sql="date='$date' AND shift='$shift' AND gander='$gendar'";
+        }
+
+
+         elseif($address!='' AND $gendar=='' AND $from=='' AND $recept=='' AND $to=='' AND $type=='' AND  $shift=='' AND $p_name=='')
+        {
+           $date=date('Y-m-d');
+            
+            $sql="date='$date' AND address='$address'";
+        }
+
+
+         elseif($address!='' AND $from!='' AND $to!='' AND $recept=='' AND $gendar=='' AND $type=='' AND  $shift=='' AND $p_name=='')
+        {
+            
+            $sql="date>='$from' AND date<='$to' AND address='$address'";
+        }
+         elseif($address!='' AND $from!='' AND $to=='' AND $recept=='' AND $gendar=='' AND $type=='' AND  $shift=='' AND $p_name=='')
+        {
+            
+            $sql="date='$from' AND  address='$address'";
+        }
+
+
+
+  			 $exe="SELECT * FROM `opd_entry` WHERE ".$sql;
+         // echo $exe; exit();
+  			 $query=$this->db->query($exe);
+  			 return $query;
+  		}
+
+  		
+  	}
+
+  	public function get_daily_record($today)
+  	{
+  		 $exe="SELECT * FROM `opd_entry` WHERE date>='$today' AND date<'$today' + INTERVAL 1 DAY";
+  		 $query=$this->db->query($exe);
+  			 return $query;
+  	}
+
+
+
+  	public function filter_day_report($status)
+  	{
+  		if($status=="week")
+  		{
+  		$exe="SELECT * FROM `opd_entry` WHERE date between date_sub(now(),INTERVAL 1 WEEK) and now()";
+  		 $query=$this->db->query($exe);	
+  		}
+  		else if($status=="month")
+  		{
+  		$exe="SELECT * FROM opd_entry WHERE MONTH(date) = MONTH(CURRENT_DATE()) AND YEAR(date) = YEAR(CURRENT_DATE())";
+  		
+  		}
+
+  		else if($status=="year")
+  		{
+  			$exe="SELECT  * FROM opd_entry WHERE YEAR(date) = YEAR(CURDATE())";
+  		}
+
+  		 $query=$this->db->query($exe);	
+  		 $row=$query->result();
+  		echo json_encode($row);
+  		return $row;
+
+  	}
+
+
+    public function get_today_record($search,$date,$type,$recept,$gendar,$p_name)
+    {
+        $sql="";
+      if(isset($search))
+      {
+        if($date!='' AND $type!='' AND $recept!='' AND $gendar!='' AND $p_name!='')
+            {
+            $sql="type='$type' AND date='$date' AND gander='$gendar' AND patient_name='$p_name'";
+
+            }
+         if($date!='' AND $type!='' AND $recept=='' AND $gendar=='' AND $p_name=='')
+            {
+            $sql="type='$type' AND date='$date'";
+
+           }
+
+          if($date!='' AND $gendar!='' AND $type=='' AND $recept==''  AND $p_name=='')
+            {
+            $sql="gander='$gendar' AND date='$date'";
+
+            }
+          if($date!='' AND $gendar!='' AND $type=='' AND $recept==''  AND $p_name=='')
+            {
+            $sql="gander='$gendar' AND date='$date'";
+
+             }
+             if($p_name!='' AND $gendar=='' AND $type=='' AND $recept==''  AND $date=='')
+            {
+            $sql="patient_name='$p_name'";
+
+             } 
+
+             if($recept!='' AND $gendar=='' AND $type=='' AND $p_name==''  AND $date=='')
+            {
+            $sql="receptNumber='$recept'";
+
+             } 
+         elseif($date=='' AND $type!='')
+         {
+          $today=date('Y-m-d');
+            $sql="type='$type' AND date='$today'";
+
+         }
+
+          $exe="SELECT * FROM `opd_entry` WHERE ".$sql;
+          echo $exe;exit();
+         $query=$this->db->query($exe);
+         return $query;
+      } 
+
+    }
+
+    public function monthly_report($search,$from,$to,$type)
+    {
+        $sql="";
+      if(isset($search))
+      {
+        if($from!='' AND $to!='' AND $type!='')
+        {
+            $sql="type='$type' AND date>='$from' AND date<='$to' GROUP BY date";
+
+         }
+
+          $exe="SELECT COUNT(receptNumber) AS no,SUM(price) AS price,date AS c_date,type FROM opd_entry WHERE ".$sql;
+          // echo $exe;exit();
+         $query=$this->db->query($exe);
+         return $query;
+    }
+  }
+}

@@ -50,5 +50,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] = 'login';
+$route['product/add_product/(:any)'] = 'http://localhost:8080/cylinder/store/product/index?id';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
